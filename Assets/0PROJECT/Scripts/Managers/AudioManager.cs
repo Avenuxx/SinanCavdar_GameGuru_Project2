@@ -24,10 +24,10 @@ public class AudioManager : MonoBehaviour
     }
 
 
-    private void OnPlaySound(object value,object value2)
+    private void OnPlaySound(object value, object value2)
     {
-        audioPlay.clip = Resources.Load<AudioClip>((string)value);
         audioPlay.pitch = (float)value2;
+        audioPlay.clip = Resources.Load<AudioClip>((string)value);
         audioPlay.PlayOneShot(audioPlay.clip);
     }
 }

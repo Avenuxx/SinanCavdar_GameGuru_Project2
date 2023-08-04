@@ -7,7 +7,8 @@ public class GameManager : MonoBehaviour
     public GameState gameStateEnum;
     public List<GameObject> stacksList = new List<GameObject>();
     public bool _isPlacedWrong;
-
+    public int score;
+    public int combo;
 
     private void Update()
     {
@@ -44,10 +45,12 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         EventManager.AddHandler(GameEvent.OnStart, OnStart);
+        EventManager.AddHandler(GameEvent.OnLose, OnLose);
     }
 
     private void OnDisable()
     {
         EventManager.RemoveHandler(GameEvent.OnStart, OnStart);
+        EventManager.RemoveHandler(GameEvent.OnLose, OnLose);
     }
 }

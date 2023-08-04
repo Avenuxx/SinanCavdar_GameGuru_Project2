@@ -20,10 +20,22 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (IsGameOver())
+        {
+            EventManager.Broadcast(GameEvent.OnLose);
+            return;
+        }
+
         if (manager.gameStateEnum != GameState.Playing && manager.gameStateEnum != GameState.GameOver)
             return;
 
-        if (playerStateEnum == PlayerState.GoingCube)
+        MovementTarget();
+    }
+
+    private void MovementTarget()
+    {
+        //MOVEMENT TOWARD STACK
+        if (playerStateEnum == PlayerState.GoingStack)
         {
             if (manager.stacksList.Count > goingStackIndex)
                 target = manager.stacksList[goingStackIndex].transform;
@@ -40,22 +52,25 @@ public class PlayerMovement : MonoBehaviour
             else
                 goingStackIndex++;
         }
+        //MOVEMENT TOWARD FORWARD
         else if (playerStateEnum == PlayerState.GoingForward)
         {
             if (goingStackIndex >= manager.stacksList.Count)
                 transform.position += Vector3.forward * moveSpeed * Time.deltaTime;
 
             else
-                playerStateEnum = PlayerState.GoingCube;
+                playerStateEnum = PlayerState.GoingStack;
         }
     }
 
-    private void GameOverCheck()
+    private bool IsGameOver()
     {
-        if (transform.position.y<0)
+        if (transform.position.y < 0)
         {
-            
+            return true;
         }
+        else
+            return false;
     }
 
     void OnStart()
@@ -73,10 +88,12 @@ public class PlayerMovement : MonoBehaviour
     private void OnEnable()
     {
         EventManager.AddHandler(GameEvent.OnStart, OnStart);
+        EventManager.AddHandler(GameEvent.OnLose, OnLose);
     }
 
     private void OnDisable()
     {
         EventManager.RemoveHandler(GameEvent.OnStart, OnStart);
+        EventManager.RemoveHandler(GameEvent.OnLose, OnLose);
     }
 }

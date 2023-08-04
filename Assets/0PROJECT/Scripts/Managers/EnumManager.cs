@@ -12,7 +12,7 @@ public enum GameState
 
 public enum PlayerState
 {
-    GoingCube,
+    GoingStack,
     GoingForward,
 }
 

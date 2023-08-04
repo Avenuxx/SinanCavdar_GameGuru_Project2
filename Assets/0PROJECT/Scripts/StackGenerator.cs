@@ -6,7 +6,6 @@ public class StackGenerator : MonoBehaviour
 {
     GameManager manager;
     public Material[] stackMaterials;
-    public int score;
 
     [SerializeField]
     private StackMovement stackPrefab;
@@ -20,9 +19,10 @@ public class StackGenerator : MonoBehaviour
     {
         var stack = Instantiate(stackPrefab);
 
+        //SET NEW STACK POSITION
         if (StackMovement.LastStack != null && StackMovement.LastStack.gameObject != GameObject.Find("StartStack"))
         {
-            int xPos = score % 2 == 0 ? -4 : 4;
+            int xPos = manager.score % 2 == 0 ? -4 : 4;
             var stackPosition = new Vector3(xPos, transform.position.y, StackMovement.LastStack.transform.position.z + stackPrefab.transform.localScale.z);
             stack.transform.position = stackPosition;
         }
