@@ -4,18 +4,13 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    PlayerManager playerManager;
     GameManager manager;
-    Animator playerAnim;
-    public PlayerState playerStateEnum;
-    public Transform target;
-    public float moveSpeed = 1.0f;
-    public int goingStackIndex;
-
 
     private void Awake()
     {
-        manager = FindObjectOfType<GameManager>();
-        playerAnim = GetComponentInChildren<Animator>();
+        playerManager = GetComponent<PlayerManager>();
+        manager = playerManager.manager;
     }
 
     private void Update()
@@ -35,31 +30,32 @@ public class PlayerMovement : MonoBehaviour
     private void MovementTarget()
     {
         //MOVEMENT TOWARD STACK
-        if (playerStateEnum == PlayerState.GoingStack)
+        if (playerManager.playerStateEnum == PlayerState.GoingStack)
         {
-            if (manager.stacksList.Count > goingStackIndex)
-                target = manager.stacksList[goingStackIndex].transform;
+            if (manager.stacksList.Count > playerManager.structMovement.goingStackIndex)
+                playerManager.structMovement.target = manager.stacksList[playerManager.structMovement.goingStackIndex].transform;
 
             else
-                playerStateEnum = PlayerState.GoingForward;
+                playerManager.playerStateEnum = PlayerState.GoingForward;
 
-            Vector3 moveDirection = (target.position - transform.position).normalized;
+            Vector3 moveDirection = (playerManager.structMovement.target.position - transform.position).normalized;
 
-            float distanceToTarget = Vector3.Distance(transform.position, target.position);
+            float distanceToTarget = Vector3.Distance(transform.position, playerManager.structMovement.target.position);
             if (distanceToTarget > .7f)
-                transform.position += moveDirection * moveSpeed * Time.deltaTime;
+                transform.position += moveDirection * playerManager.structMovement.moveSpeed * Time.deltaTime;
 
             else
-                goingStackIndex++;
+                playerManager.structMovement.goingStackIndex++;
         }
+
         //MOVEMENT TOWARD FORWARD
-        else if (playerStateEnum == PlayerState.GoingForward)
+        else if (playerManager.playerStateEnum == PlayerState.GoingForward)
         {
-            if (goingStackIndex >= manager.stacksList.Count)
-                transform.position += Vector3.forward * moveSpeed * Time.deltaTime;
+            if (playerManager.structMovement.goingStackIndex >= manager.stacksList.Count)
+                transform.position += Vector3.forward * playerManager.structMovement.moveSpeed * Time.deltaTime;
 
             else
-                playerStateEnum = PlayerState.GoingStack;
+                playerManager.playerStateEnum = PlayerState.GoingStack;
         }
     }
 
@@ -73,27 +69,5 @@ public class PlayerMovement : MonoBehaviour
             return false;
     }
 
-    void OnStart()
-    {
-        playerAnim.SetBool("isStart",true);
-    }
-
-    void OnLose()
-    {
-        playerAnim.SetTrigger("isFalling");
-    }
-
-
-    ///////////////// EVENTS /////////////////
-    private void OnEnable()
-    {
-        EventManager.AddHandler(GameEvent.OnStart, OnStart);
-        EventManager.AddHandler(GameEvent.OnLose, OnLose);
-    }
-
-    private void OnDisable()
-    {
-        EventManager.RemoveHandler(GameEvent.OnStart, OnStart);
-        EventManager.RemoveHandler(GameEvent.OnLose, OnLose);
-    }
+   
 }

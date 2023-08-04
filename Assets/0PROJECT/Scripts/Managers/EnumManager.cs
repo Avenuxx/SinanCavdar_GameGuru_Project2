@@ -16,4 +16,10 @@ public enum PlayerState
     GoingForward,
 }
 
+public enum CMCam
+{
+    CMPlayer, 
+    CMFinishLine,
+}
+
 

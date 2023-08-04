@@ -64,7 +64,10 @@ public class StackMovement : MonoBehaviour
         if ((StackMovement)value != this)
             return;
 
+
+
         moveSpeed = 0;
+
         var diff = transform.position.x - LastStack.gameObject.transform.position.x;
 
         CheckForGameOverOrPerfect(diff);
@@ -87,7 +90,7 @@ public class StackMovement : MonoBehaviour
         var perfectThreshold = 0.2f;
 
         //ON PERFECT PLACED OF STACK
-        if (Mathf.Abs(diff) <= perfectThreshold)
+        if (Mathf.Abs(diff) <= perfectThreshold && manager.stackCount != 0)
         {
             var perfectPosition = new Vector3(LastStack.transform.position.x, transform.position.y, transform.position.z);
             transform.position = perfectPosition;
@@ -97,7 +100,7 @@ public class StackMovement : MonoBehaviour
             manager.stacksList.Add(gameObject);
             manager.combo++;
 
-            EventManager.Broadcast(GameEvent.OnPlaySound, "Note", 1f + ((manager.combo + 1f) / 10f));
+            EventManager.Broadcast(GameEvent.OnPlaySoundPitch, "Note", 1f + ((manager.combo + 1f) / 10f));
             CinemachineShake.Instance.ShakeCamera(.7f, .3f);
             return;
         }

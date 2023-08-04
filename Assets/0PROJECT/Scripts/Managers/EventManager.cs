@@ -5,9 +5,14 @@ public enum GameEvent
 {
     OnStart,
     OnLose,
-    OnPlaySound,
     OnPlaceStack,
     OnSpawnStack,
+    OnSetFinishLine,
+    OnFinishLine,
+
+    //AUDIO EVENTS
+    OnPlaySound,
+    OnPlaySoundPitch,
 }
 
 public static class EventManager

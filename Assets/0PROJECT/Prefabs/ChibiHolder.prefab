@@ -11,7 +11,10 @@ GameObject:
   - component: {fileID: 862958644073136195}
   - component: {fileID: 7000223139282616569}
   - component: {fileID: 8749616496150640665}
+  - component: {fileID: 4739053937385140167}
   - component: {fileID: 316386950439474227}
+  - component: {fileID: 5815516398442991267}
+  - component: {fileID: 495171301842006281}
   m_Layer: 0
   m_Name: ChibiHolder
   m_TagString: Player
@@ -64,6 +67,30 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.48038638, y: 1.2531804, z: 0.38947296}
   m_Center: {x: 0.0032886863, y: 0.6107444, z: -0.017956674}
+--- !u!114 &4739053937385140167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 862958644073136192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cebf851fbe78b5e41a0c0f9e01a07ca8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  manager: {fileID: 0}
+  data: {fileID: 11400000, guid: 20bf34d0599693d428657b281103c5de, type: 2}
+  playerMovement: {fileID: 316386950439474227}
+  playerAnimation: {fileID: 495171301842006281}
+  playerTrigger: {fileID: 5815516398442991267}
+  playerStateEnum: 0
+  structMovement:
+    target: {fileID: 0}
+    moveSpeed: 0
+    goingStackIndex: 0
+  structAnimation:
+    playerAnim: {fileID: 0}
 --- !u!114 &316386950439474227
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76,10 +103,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d0c7434cc81c64ebb44419363eab3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerStateEnum: 0
-  target: {fileID: 0}
-  moveSpeed: 1
-  goingStackIndex: 0
+--- !u!114 &5815516398442991267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 862958644073136192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13c0f9b9a72b4464da95f032012faae9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &495171301842006281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 862958644073136192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06261fc592604de4694cb49a6016049c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &281216191691715678
 PrefabInstance:
   m_ObjectHideFlags: 0

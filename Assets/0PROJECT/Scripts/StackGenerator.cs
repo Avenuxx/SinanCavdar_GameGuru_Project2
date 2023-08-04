@@ -7,8 +7,8 @@ public class StackGenerator : MonoBehaviour
     GameManager manager;
     public Material[] stackMaterials;
 
-    [SerializeField]
-    private StackMovement stackPrefab;
+
+    public StackMovement stackPrefab;
 
     private void Awake()
     {
@@ -17,6 +17,8 @@ public class StackGenerator : MonoBehaviour
 
     public void OnSpawnStack()
     {
+        manager.stackCount--;
+
         var stack = Instantiate(stackPrefab);
 
         //SET NEW STACK POSITION

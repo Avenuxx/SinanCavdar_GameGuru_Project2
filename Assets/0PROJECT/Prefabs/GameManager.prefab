@@ -44,3 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b335b23a8dab8b948bd1904d9ca18938, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  data: {fileID: 11400000, guid: 20bf34d0599693d428657b281103c5de, type: 2}
+  gameStateEnum: 0
+  player: {fileID: 0}
+  stacksList: []
+  _isPlacedWrong: 0
+  score: 0
+  combo: 0
