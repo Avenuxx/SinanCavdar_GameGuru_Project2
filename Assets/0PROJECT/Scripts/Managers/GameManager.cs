@@ -4,15 +4,25 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called before the first frame update
+    private StackGenerator stackGenerator;
+    public bool _isGameOver;
+
     void Start()
     {
-        
+        stackGenerator = FindObjectOfType<StackGenerator>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
+        {
+            if (StackMovement.CurrentStack != null)
+                StackMovement.CurrentStack.Stop();
+
+            if (_isGameOver == true)
+                return;
+
+            stackGenerator.SpawnStack();
+        }
     }
 }

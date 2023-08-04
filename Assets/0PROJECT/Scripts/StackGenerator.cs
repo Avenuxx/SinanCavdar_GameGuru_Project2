@@ -10,18 +10,7 @@ public class StackGenerator : MonoBehaviour
     [SerializeField]
     private StackMovement stackPrefab;
 
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
-        {
-            if (StackMovement.CurrentStack != null)
-                StackMovement.CurrentStack.Stop();
-
-            SpawnStack();
-        }
-    }
-
-    private void SpawnStack()
+    public void SpawnStack()
     {
         var stack = Instantiate(stackPrefab);
 

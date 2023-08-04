@@ -5,12 +5,18 @@ using UnityEngine;
 
 public class StackMovement : MonoBehaviour
 {
+    GameManager manager;
     public float moveSpeed = 1f;
     StackGenerator stackGenerator;
     private bool _isForward = true;
 
     public static StackMovement CurrentStack { get; private set; }
     public static StackMovement LastStack { get; private set; }
+
+    private void Awake()
+    {
+        manager = FindObjectOfType<GameManager>();
+    }
 
     private void OnEnable()
     {
@@ -29,12 +35,20 @@ public class StackMovement : MonoBehaviour
         moveSpeed = 0;
         float diff = transform.position.x - LastStack.gameObject.transform.position.x;
 
-
         if (Mathf.Abs(diff) >= LastStack.transform.localScale.x)
         {
             LastStack = null;
             CurrentStack = null;
+            manager._isGameOver = true;
             Debug.Log("Game over");
+            return;
+        }
+
+        if (Mathf.Abs(diff) <= .2f)
+        {
+            transform.position = new Vector3(LastStack.transform.position.x, transform.position.y, transform.position.z);
+            Debug.Log("perfect");
+            LastStack = GetComponent<StackMovement>();
             return;
         }
 
@@ -72,6 +86,9 @@ public class StackMovement : MonoBehaviour
 
     void Update()
     {
+        if (manager._isGameOver == true)
+            return;
+
         var position = transform.position;
         var direction = _isForward ? 1 : -1;
         var move = moveSpeed * Time.deltaTime * direction;
