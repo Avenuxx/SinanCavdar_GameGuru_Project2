@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    private StackGenerator stackGenerator;
-    public bool _isGameOver;
+    public GameState gameStateEnum;
+    public List<GameObject> stacksList = new List<GameObject>();
 
     void Start()
     {
-        stackGenerator = FindObjectOfType<StackGenerator>();
+
     }
 
     private void Update()
@@ -17,12 +17,12 @@ public class GameManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
         {
             if (StackMovement.CurrentStack != null)
-                StackMovement.CurrentStack.Stop();
+                EventManager.Broadcast(GameEvent.OnPlaceStack, StackMovement.CurrentStack);
 
-            if (_isGameOver == true)
+            if (gameStateEnum == GameState.GameOver)
                 return;
 
-            stackGenerator.SpawnStack();
+            EventManager.Broadcast(GameEvent.OnSpawnStack);
         }
     }
 }

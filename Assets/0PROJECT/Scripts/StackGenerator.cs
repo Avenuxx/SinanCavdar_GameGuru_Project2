@@ -10,14 +10,15 @@ public class StackGenerator : MonoBehaviour
     [SerializeField]
     private StackMovement stackPrefab;
 
-    public void SpawnStack()
+    public void OnSpawnStack()
     {
         var stack = Instantiate(stackPrefab);
 
         if (StackMovement.LastStack != null && StackMovement.LastStack.gameObject != GameObject.Find("StartStack"))
         {
-            int xPos = score % 2==0 ? -4 : 4;
-            stack.transform.position = new Vector3(xPos, transform.position.y, StackMovement.LastStack.transform.position.z + stackPrefab.transform.localScale.z);
+            int xPos = score % 2 == 0 ? -4 : 4;
+            var stackPosition = new Vector3(xPos, transform.position.y, StackMovement.LastStack.transform.position.z + stackPrefab.transform.localScale.z);
+            stack.transform.position = stackPosition;
         }
         else
         {
@@ -29,5 +30,18 @@ public class StackGenerator : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(transform.position, stackPrefab.transform.localScale);
+    }
+
+
+
+    ///////////////// EVENTS /////////////////
+    private void OnEnable()
+    {
+        EventManager.AddHandler(GameEvent.OnSpawnStack, OnSpawnStack);
+    }
+
+    private void OnDisable()
+    {
+        EventManager.RemoveHandler(GameEvent.OnSpawnStack, OnSpawnStack);
     }
 }

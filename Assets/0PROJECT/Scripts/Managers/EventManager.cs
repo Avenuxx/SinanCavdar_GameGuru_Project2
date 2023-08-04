@@ -4,27 +4,11 @@ using System.Collections.Generic;
 public enum GameEvent
 {
     OnStart,
-    OnFail,
-    OnWin,
-    OnPowerUp,
-    OnStaminaUp,
-    OnIncomeUp,
-    OnCrash,
-    OnEarnMoney,
-    OnPenPropertiesUpdate,
-    OnDig,
-    OnFoundTreasure,
-    OnHighScore,
-    OnMineLootBar,
-    OnCityView,
-    OnMineView,
-    OnBuildingEnter,
-    OnBuildingExit,
-    OnUnlockBuild,
-    OnFlowPiece,
-    OnDailyGift
-    
+    OnPlaySound,
+    OnPlaceStack,
+    OnSpawnStack,
 }
+
 public static class EventManager
 {
     private static Dictionary<GameEvent, Action> eventTable =

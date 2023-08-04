@@ -6,8 +6,9 @@ using UnityEngine;
 public class StackMovement : MonoBehaviour
 {
     GameManager manager;
-    public float moveSpeed = 1f;
     StackGenerator stackGenerator;
+
+    public float moveSpeed = 1f;
     private bool _isForward = true;
 
     public static StackMovement CurrentStack { get; private set; }
@@ -18,56 +19,90 @@ public class StackMovement : MonoBehaviour
         manager = FindObjectOfType<GameManager>();
     }
 
-    private void OnEnable()
+    private void Start()
     {
         if (LastStack == null)
+        {
             LastStack = GameObject.Find("StartStack").GetComponent<StackMovement>();
+        }
 
         CurrentStack = this;
         stackGenerator = FindObjectOfType<StackGenerator>();
-        GetComponent<Renderer>().material = stackGenerator.stackMaterials[stackGenerator.score];
+        var renderer = GetComponent<Renderer>();
+        renderer.material = stackGenerator.stackMaterials[stackGenerator.score];
 
-        transform.localScale = new Vector3(LastStack.transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        var localScale = transform.localScale;
+        localScale.x = LastStack.transform.localScale.x;
+        transform.localScale = localScale;
     }
 
-    public void Stop()
+    void Update()
     {
-        moveSpeed = 0;
-        float diff = transform.position.x - LastStack.gameObject.transform.position.x;
+        if (manager.gameStateEnum == GameState.GameOver)
+            return;
 
-        if (Mathf.Abs(diff) >= LastStack.transform.localScale.x)
+        var direction = _isForward ? 1 : -1;
+        var move = moveSpeed * Time.deltaTime * direction;
+        var limit = LastStack.transform.localScale.x + 1;
+
+        Vector3 newPosition = transform.position + Vector3.right * move;
+        newPosition.x = Mathf.Clamp(newPosition.x, -limit, limit);
+
+        if (Mathf.Abs(newPosition.x) >= limit)
+        {
+            _isForward = !_isForward;
+        }
+
+        transform.position = newPosition;
+    }
+
+    public void OnPlaceStack(object value)
+    {
+        if ((StackMovement)value != this)
+            return;
+
+        moveSpeed = 0;
+        var diff = transform.position.x - LastStack.gameObject.transform.position.x;
+
+        CheckForGameOverOrPerfect(diff);
+    }
+
+    private void CheckForGameOverOrPerfect(float diff)
+    {
+        var stackScaleX = LastStack.transform.localScale.x;
+        if (Mathf.Abs(diff) >= stackScaleX)
         {
             LastStack = null;
             CurrentStack = null;
-            manager._isGameOver = true;
-            Debug.Log("Game over");
+            manager.gameStateEnum = GameState.GameOver;
             return;
         }
 
-        if (Mathf.Abs(diff) <= .2f)
+        var perfectThreshold = 0.2f;
+        if (Mathf.Abs(diff) <= perfectThreshold)
         {
-            transform.position = new Vector3(LastStack.transform.position.x, transform.position.y, transform.position.z);
-            Debug.Log("perfect");
+            var perfectPosition = new Vector3(LastStack.transform.position.x, transform.position.y, transform.position.z);
+            transform.position = perfectPosition;
             LastStack = GetComponent<StackMovement>();
             return;
         }
 
-        float dir = diff > 0 ? 1 : -1;
+        var dir = diff > 0 ? 1 : -1;
         SplitCube(diff, dir);
         LastStack = GetComponent<StackMovement>();
     }
 
     private void SplitCube(float diff, float dir)
     {
-        float newBoundsSize = LastStack.transform.localScale.x - Mathf.Abs(diff);
-        float fallingStackSize = transform.localScale.x - newBoundsSize;
+        var newBoundsSize = LastStack.transform.localScale.x - Mathf.Abs(diff);
+        var fallingStackSize = transform.localScale.x - newBoundsSize;
 
-        float newBlockPosX = LastStack.transform.position.x + (diff / 2);
+        var newBlockPosX = LastStack.transform.position.x + (diff / 2);
         transform.localScale = new Vector3(newBoundsSize, transform.localScale.y, transform.localScale.z);
         transform.position = new Vector3(newBlockPosX, transform.position.y, transform.position.z);
 
-        float stackEdge = transform.position.x + (newBoundsSize / 2f * dir);
-        float fallingStackXPos = stackEdge + fallingStackSize / 2f * dir;
+        var stackEdge = transform.position.x + (newBoundsSize / 2f * dir);
+        var fallingStackXPos = stackEdge + fallingStackSize / 2f * dir;
 
         SpawnFallingStack(fallingStackXPos, fallingStackSize);
     }
@@ -78,30 +113,28 @@ public class StackMovement : MonoBehaviour
         newStack.transform.localScale = new Vector3(fallingStackSize, transform.localScale.y, transform.localScale.z);
         newStack.transform.position = new Vector3(fallingStackXPos, transform.position.y, transform.position.z);
 
-        newStack.AddComponent<Rigidbody>();
-        newStack.GetComponent<Renderer>().material = GetComponent<Renderer>().material;
+        var newStackRigidbody = newStack.AddComponent<Rigidbody>();
+        newStackRigidbody.useGravity = true;
+
+        var newStackRenderer = newStack.GetComponent<Renderer>();
+        var thisStackRenderer = GetComponent<Renderer>();
+        newStackRenderer.material = thisStackRenderer.material;
+
         stackGenerator.score++;
+
         Destroy(newStack, 5f);
     }
 
-    void Update()
+
+
+    ///////////////// EVENTS /////////////////
+    private void OnEnable()
     {
-        if (manager._isGameOver == true)
-            return;
+        EventManager.AddHandler(GameEvent.OnPlaceStack, OnPlaceStack);
+    }
 
-        var position = transform.position;
-        var direction = _isForward ? 1 : -1;
-        var move = moveSpeed * Time.deltaTime * direction;
-        var limit = LastStack.transform.localScale.x + 1;
-
-        position.x += move;
-
-        if (position.x < -limit || position.x > limit)
-        {
-            position.x = Mathf.Clamp(position.x, -limit, limit);
-            _isForward = !_isForward;
-        }
-
-        transform.position = position;
+    private void OnDisable()
+    {
+        EventManager.RemoveHandler(GameEvent.OnPlaceStack, OnPlaceStack);
     }
 }
