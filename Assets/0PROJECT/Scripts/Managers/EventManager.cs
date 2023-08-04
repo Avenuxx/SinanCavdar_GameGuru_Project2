@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public enum GameEvent
 {
     OnStart,
+    OnLose,
     OnPlaySound,
     OnPlaceStack,
     OnSpawnStack,

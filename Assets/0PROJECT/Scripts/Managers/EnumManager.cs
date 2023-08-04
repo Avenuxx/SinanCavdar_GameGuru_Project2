@@ -9,3 +9,11 @@ public enum GameState
     FinishLine,
     GameOver,
 }
+
+public enum PlayerState
+{
+    GoingCube,
+    GoingForward,
+}
+
+

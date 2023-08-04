@@ -29,7 +29,7 @@ public class StackMovement : MonoBehaviour
         CurrentStack = this;
         stackGenerator = FindObjectOfType<StackGenerator>();
         var renderer = GetComponent<Renderer>();
-        renderer.material = stackGenerator.stackMaterials[stackGenerator.score];
+        renderer.material = stackGenerator.stackMaterials[stackGenerator.score % 12];
 
         var localScale = transform.localScale;
         localScale.x = LastStack.transform.localScale.x;
@@ -38,7 +38,7 @@ public class StackMovement : MonoBehaviour
 
     void Update()
     {
-        if (manager.gameStateEnum == GameState.GameOver)
+        if (manager._isPlacedWrong)
             return;
 
         var direction = _isForward ? 1 : -1;
@@ -74,7 +74,8 @@ public class StackMovement : MonoBehaviour
         {
             LastStack = null;
             CurrentStack = null;
-            manager.gameStateEnum = GameState.GameOver;
+            gameObject.AddComponent<Rigidbody>();
+            manager._isPlacedWrong=true;
             return;
         }
 
@@ -84,9 +85,12 @@ public class StackMovement : MonoBehaviour
             var perfectPosition = new Vector3(LastStack.transform.position.x, transform.position.y, transform.position.z);
             transform.position = perfectPosition;
             LastStack = GetComponent<StackMovement>();
+            stackGenerator.score++;
+            manager.stacksList.Add(gameObject);
             return;
         }
 
+        manager.stacksList.Add(gameObject);
         var dir = diff > 0 ? 1 : -1;
         SplitCube(diff, dir);
         LastStack = GetComponent<StackMovement>();

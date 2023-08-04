@@ -4,11 +4,17 @@ using UnityEngine;
 
 public class StackGenerator : MonoBehaviour
 {
+    GameManager manager;
     public Material[] stackMaterials;
     public int score;
 
     [SerializeField]
     private StackMovement stackPrefab;
+
+    private void Awake()
+    {
+        manager = FindObjectOfType<GameManager>();
+    }
 
     public void OnSpawnStack()
     {
