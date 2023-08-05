@@ -15,7 +15,15 @@ public class UIManager : MonoBehaviour
     {
         public GameObject winPanel;
         public GameObject losePanel;
+        public GameObject tutorial;
         public GameObject[] panelElements;
+    }
+
+    [Serializable]
+    public struct Transforms
+    {
+        public Transform coin;
+        public Transform score;
     }
 
     [Serializable]
@@ -30,6 +38,7 @@ public class UIManager : MonoBehaviour
 
     public Objects objects;
     public Texts texts;
+    public Transforms transforms;
 
     private void Awake()
     {
@@ -54,6 +63,12 @@ public class UIManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
+    private void OnStart()
+    {
+        //CLOSE TUTORIAL ELEMENTS
+        objects.tutorial.SetActive(false);
+    }
+
     private void OnWin()
     {
         StartCoroutine(OpenWinLosePanel(objects.winPanel));
@@ -67,6 +82,7 @@ public class UIManager : MonoBehaviour
 
     IEnumerator OpenWinLosePanel(GameObject panel)
     {
+        //WAIT FOR PLAYER TO SEE CAMERA ROTATION VIEW
         yield return new WaitForSeconds(3f);
         SetPanelElements(false);
         panel.SetActive(true);
@@ -74,10 +90,21 @@ public class UIManager : MonoBehaviour
 
     void SetPanelElements(bool active)
     {
+        //CLOSE THE PANEL ELEMENTS ON PANEL
         foreach (GameObject element in objects.panelElements)
         {
             element.SetActive(active);
         }
+    }
+
+    void OnEarnMoney(object value)
+    {
+        transforms.coin.LeanScale(1.25f * transforms.coin.localScale, .5f).setEasePunch();
+    }
+
+    void OnEarnScore()
+    {
+        transforms.score.LeanScale(1.25f * transforms.score.localScale, .5f).setEasePunch();
     }
 
     void TypeTexts()
@@ -87,7 +114,8 @@ public class UIManager : MonoBehaviour
         texts.totalMoneyText.text = manager.data.TotalMoney.ToString("0");
         texts.levelCountText.text = "LEVEL " + (manager.data.levelCount + 1);
 
-        string perfectStreakText = manager.intFloats.perfectStackStreak + " perfect streak / " + manager.data.LevelStackCounts[manager.data.levelCount] + " stack";
+        //PERFECT STREAK TEXT ON PANEL
+        string perfectStreakText = manager.intFloats.perfectStackStreak + " perfect streak / \n" + manager.data.LevelStackCounts[manager.data.levelCount] + " stack";
         texts.winPerfectStreakText.text = perfectStreakText;
         texts.losePerfectStreakText.text = perfectStreakText;
     }
@@ -96,13 +124,19 @@ public class UIManager : MonoBehaviour
     ///////////////// EVENTS /////////////////
     private void OnEnable()
     {
+        EventManager.AddHandler(GameEvent.OnStart, OnStart);
         EventManager.AddHandler(GameEvent.OnWin, OnWin);
         EventManager.AddHandler(GameEvent.OnLose, OnLose);
+        EventManager.AddHandler(GameEvent.OnEarnMoney, OnEarnMoney);
+        EventManager.AddHandler(GameEvent.OnEarnScore, OnEarnScore);
     }
 
     private void OnDisable()
     {
+        EventManager.RemoveHandler(GameEvent.OnStart, OnStart);
         EventManager.RemoveHandler(GameEvent.OnWin, OnWin);
         EventManager.RemoveHandler(GameEvent.OnLose, OnLose);
+        EventManager.RemoveHandler(GameEvent.OnEarnMoney, OnEarnMoney);
+        EventManager.RemoveHandler(GameEvent.OnEarnScore, OnEarnScore);
     }
 }

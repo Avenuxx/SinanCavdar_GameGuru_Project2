@@ -9,6 +9,8 @@ public class GameData : ScriptableObject
 {
     [Header("Ints & Floats")]
     public int levelCount;
+
+    //ENCAPSULATION TO PREVENT THE SCORE VALUE FROM FALLING BELOW 0
     [SerializeField] private float score;
     public float Score
     {
@@ -19,6 +21,8 @@ public class GameData : ScriptableObject
             else score = value;
         }
     }
+
+    //ENCAPSULATION TO PREVENT THE TOTALMONEY VALUE FROM FALLING BELOW 0
     [SerializeField] private float totalMoney;
     public float TotalMoney
     {

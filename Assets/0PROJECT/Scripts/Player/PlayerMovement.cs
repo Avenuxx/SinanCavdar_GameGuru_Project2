@@ -18,7 +18,7 @@ public class PlayerMovement : MonoBehaviour
         if (IsGameOver()&& manager.gameStateEnum == GameState.Playing)
         {
             EventManager.Broadcast(GameEvent.OnLose);
-            Debug.Log("sinan");
+            EventManager.Broadcast(GameEvent.OnPlaySound, "FallScream");
             return;
         }
 
@@ -33,9 +33,11 @@ public class PlayerMovement : MonoBehaviour
         //MOVEMENT TOWARD STACK
         if (playerManager.playerStateEnum == PlayerState.GoingStack)
         {
+            //IS THERE ANY STACK TO GO
             if (manager.lists.stacksList.Count > playerManager.structMovement.goingStackIndex)
                 playerManager.structMovement.target = manager.lists.stacksList[playerManager.structMovement.goingStackIndex].transform;
 
+            //PLAYER NEED TO GO FORWARD
             else
             {
                 playerManager.playerStateEnum = PlayerState.GoingForward;
@@ -44,10 +46,12 @@ public class PlayerMovement : MonoBehaviour
 
             Vector3 moveDirection = (playerManager.structMovement.target.position - transform.position).normalized;
 
+            //GET THE DISTANCE BETWEEN STACK AND PLAYER
             float distanceToTarget = Vector3.Distance(transform.position, playerManager.structMovement.target.position);
             if (distanceToTarget > .7f)
                 transform.position += moveDirection * playerManager.structMovement.moveSpeed * Time.deltaTime;
 
+            //GET THE COUNT OF HOW MANY STACK DID PLAYER REACH
             else
                 playerManager.structMovement.goingStackIndex++;
         }
@@ -55,6 +59,7 @@ public class PlayerMovement : MonoBehaviour
         //MOVEMENT TOWARD FORWARD
         else if (playerManager.playerStateEnum == PlayerState.GoingForward)
         {
+            //IS THERE ANY STACK TO GO
             if (playerManager.structMovement.goingStackIndex >= manager.lists.stacksList.Count)
                 transform.position += Vector3.forward * playerManager.structMovement.moveSpeed * Time.deltaTime;
 
@@ -65,6 +70,7 @@ public class PlayerMovement : MonoBehaviour
 
     private bool IsGameOver()
     {
+        //CHECK FOR PLAYER Y POS
         if (transform.position.y < 0)
         {
             return true;
@@ -77,7 +83,6 @@ public class PlayerMovement : MonoBehaviour
     {
         playerManager.structMovement.goingStackIndex = 0;
     }
-
 
 
     ///////////////// EVENTS /////////////////

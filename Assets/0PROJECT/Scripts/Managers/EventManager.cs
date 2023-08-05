@@ -13,6 +13,11 @@ public enum GameEvent
     OnSpawnCollectable,
     OnSetFinishLine,
     OnCollect,
+    OnEarnScore,
+    OnEarnMoney,
+    OnWrongPlacedStack,
+    OnNormalPlacedStack,
+    OnPerfectPlacedStack,
 
     //AUDIO EVENTS
     OnPlaySound,

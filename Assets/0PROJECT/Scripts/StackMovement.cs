@@ -46,11 +46,12 @@ public class StackMovement : MonoBehaviour
         if (manager.bools._isPlacedWrong)
             return;
 
-        //LEFT-RIGHT MOVEMENT OF CURRENT STACK
+        //VARIABLES OF MOVEMENT OF CURRENT STACK
         var direction = _isForward ? 1 : -1;
         var move = moveSpeed * Time.deltaTime * direction;
         var limit = LastStack.transform.localScale.x + 1;
 
+        //LEFT-RIGHT MOVEMENT OF CURRENT STACK
         Vector3 newPosition = transform.position + Vector3.right * move;
         newPosition.x = Mathf.Clamp(newPosition.x, -limit, limit);
 
@@ -60,6 +61,7 @@ public class StackMovement : MonoBehaviour
             _isForward = !_isForward;
         }
 
+        //SET STACK POSITION
         transform.position = newPosition;
     }
 
@@ -70,6 +72,7 @@ public class StackMovement : MonoBehaviour
 
         moveSpeed = 0;
 
+        //X POSITION DIFFERENCE BETWEEN LAST STACK AND THE STACK THAT WE WILL USE
         var diff = transform.position.x - LastStack.gameObject.transform.position.x;
 
         CheckForGameOverOrPerfect(diff);
@@ -79,58 +82,30 @@ public class StackMovement : MonoBehaviour
     {
         var stackScaleX = LastStack.transform.localScale.x;
 
+        //CAN PLAYER USE STACK
         if (!manager.bools._canPlaceStack)
             return;
 
+        //IS PLAYER HAVE ANY STACK
         if (manager.intFloats.stackCount == 0)
             manager.bools._canPlaceStack = false;
 
         //ON WRONG PLACED OF STACK
         if (Mathf.Abs(diff) >= stackScaleX)
         {
-            LastStack = null;
-            CurrentStack = null;
-            gameObject.AddComponent<Rigidbody>();
-            manager.bools._isPlacedWrong = true;
-            EventManager.Broadcast(GameEvent.OnPlaySound, "FailStack");
+            EventManager.Broadcast(GameEvent.OnWrongPlacedStack, gameObject);
             return;
         }
-
 
         //ON PERFECT PLACED OF STACK
         if (Mathf.Abs(diff) <= perfectThreshold)
         {
-            var perfectPosition = new Vector3(LastStack.transform.position.x, transform.position.y, transform.position.z);
-            transform.position = perfectPosition;
-            LastStack = GetComponent<StackMovement>();
-
-            //SCORE INCREASE
-            manager.data.Score += 3;
-            manager.lists.stacksList.Add(gameObject);
-            manager.intFloats.perfectStack++;
-
-            //PERFECT STREAK CALCULATION
-            if (manager.intFloats.perfectStack > manager.intFloats.perfectStackStreak)
-                manager.intFloats.perfectStackStreak = manager.intFloats.perfectStack;
-
-            transform.LeanScale(transform.localScale * 1.15f, 0.7f).setEasePunch();
-
-            EventManager.Broadcast(GameEvent.OnPerfectPlaceStack, gameObject);
-
-            //PLAY AUDIO AND CAMERA SHAKE
-            var pitchAmount = 1f + ((manager.intFloats.perfectStack + 1f) / 10f);
-            EventManager.Broadcast(GameEvent.OnPlaySoundPitch, "Note", pitchAmount);
-            CinemachineShake.Instance.ShakeCamera(.7f, .3f);
+            EventManager.Broadcast(GameEvent.OnPerfectPlacedStack, gameObject);
             return;
         }
 
         //ON NORMAL PLACED OF STACK
-        manager.intFloats.perfectStack = 0;
-        manager.lists.stacksList.Add(gameObject);
-        var dir = diff > 0 ? 1 : -1;
-        SplitCube(diff, dir);
-        LastStack = GetComponent<StackMovement>();
-        EventManager.Broadcast(GameEvent.OnPlaySound, "Break");
+            EventManager.Broadcast(GameEvent.OnNormalPlacedStack,diff, gameObject);
     }
 
     private void SplitCube(float diff, float dir)
@@ -144,6 +119,7 @@ public class StackMovement : MonoBehaviour
         transform.localScale = new Vector3(newBoundsSize, transform.localScale.y, transform.localScale.z);
         transform.position = new Vector3(newBlockPosX, transform.position.y, transform.position.z);
 
+        //SET TRANSFORMS
         var stackEdge = transform.position.x + (newBoundsSize / 2f * dir);
         var fallingStackXPos = stackEdge + fallingStackSize / 2f * dir;
 
@@ -162,13 +138,72 @@ public class StackMovement : MonoBehaviour
         var newStackRigidbody = newStack.AddComponent<Rigidbody>();
         newStackRigidbody.useGravity = true;
 
+        //SET MATERIAL OF NEW STACK
         var newStackRenderer = newStack.GetComponent<Renderer>();
         var thisStackRenderer = GetComponent<Renderer>();
         newStackRenderer.material = thisStackRenderer.material;
 
-        manager.data.Score++;
-
         Destroy(newStack, 5f);
+    }
+
+    private void OnWrongPlacedStack(object value)
+    {
+        if ((GameObject)value != this.gameObject)
+            return;
+
+        LastStack = null;
+        CurrentStack = null;
+        gameObject.AddComponent<Rigidbody>();
+        manager.bools._isPlacedWrong = true;
+        EventManager.Broadcast(GameEvent.OnPlaySound, "FailStack");
+    }
+
+    private void OnPerfectPlacedStack(object value)
+    {
+        if ((GameObject)value != this.gameObject)
+            return;
+
+        //GET PERFECT POSITITON FOR STACK
+        var perfectPosition = new Vector3(LastStack.transform.position.x, transform.position.y, transform.position.z);
+        transform.position = perfectPosition;
+        LastStack = GetComponent<StackMovement>();
+
+        //SCORE INCREASE
+        manager.data.Score += 3;
+        EventManager.Broadcast(GameEvent.OnEarnScore);
+        manager.lists.stacksList.Add(gameObject);
+        manager.intFloats.perfectStack++;
+
+        //PERFECT STREAK CALCULATION
+        if (manager.intFloats.perfectStack > manager.intFloats.perfectStackStreak)
+            manager.intFloats.perfectStackStreak = manager.intFloats.perfectStack;
+
+        transform.LeanScale(transform.localScale * 1.15f, 0.7f).setEasePunch();
+
+        EventManager.Broadcast(GameEvent.OnPerfectPlaceStack, gameObject);
+
+        //PLAY AUDIO AND CAMERA SHAKE
+        var pitchAmount = 1f + ((manager.intFloats.perfectStack + 1f) / 10f);
+        EventManager.Broadcast(GameEvent.OnPlaySoundPitch, "Note", pitchAmount);
+        CinemachineShake.Instance.ShakeCamera(.7f, .3f);
+    }
+
+    private void OnNormalPlacedStack(object diff, object value)
+    {
+        if ((GameObject)value != this.gameObject)
+            return;
+
+        float dif = (float)diff;
+
+        manager.data.Score++;
+        manager.intFloats.perfectStack = 0;
+        manager.lists.stacksList.Add(gameObject);
+
+        var dir = dif > 0 ? 1 : -1;
+        SplitCube(dif, dir);
+        LastStack = GetComponent<StackMovement>();
+        EventManager.Broadcast(GameEvent.OnEarnScore);
+        EventManager.Broadcast(GameEvent.OnPlaySound, "Break");
     }
 
     private void OnNextLevel()
@@ -176,18 +211,22 @@ public class StackMovement : MonoBehaviour
         LastStack = stackGenerator.startStack.GetComponent<StackMovement>();
     }
 
-
-
     ///////////////// EVENTS /////////////////
     private void OnEnable()
     {
         EventManager.AddHandler(GameEvent.OnPlaceStack, OnPlaceStack);
         EventManager.AddHandler(GameEvent.OnNextLevel, OnNextLevel);
+        EventManager.AddHandler(GameEvent.OnWrongPlacedStack, OnWrongPlacedStack);
+        EventManager.AddHandler(GameEvent.OnNormalPlacedStack, OnNormalPlacedStack);
+        EventManager.AddHandler(GameEvent.OnPerfectPlacedStack, OnPerfectPlacedStack);
     }
 
     private void OnDisable()
     {
         EventManager.RemoveHandler(GameEvent.OnPlaceStack, OnPlaceStack);
         EventManager.RemoveHandler(GameEvent.OnNextLevel, OnNextLevel);
+        EventManager.RemoveHandler(GameEvent.OnWrongPlacedStack, OnWrongPlacedStack);
+        EventManager.RemoveHandler(GameEvent.OnNormalPlacedStack, OnNormalPlacedStack);
+        EventManager.RemoveHandler(GameEvent.OnPerfectPlacedStack, OnPerfectPlacedStack);
     }
 }
