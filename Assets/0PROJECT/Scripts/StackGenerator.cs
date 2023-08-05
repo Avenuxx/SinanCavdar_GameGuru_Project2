@@ -5,8 +5,9 @@ using UnityEngine;
 public class StackGenerator : InstanceManager<StackGenerator>
 {
     GameManager manager;
-    StackMovement stackPrefab;
+    public StackMovement stackPrefab;
 
+    [Space(10)]
     [Header("Materials")]
     public Material[] stackMaterials;
 

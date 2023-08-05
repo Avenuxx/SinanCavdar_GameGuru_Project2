@@ -9,7 +9,6 @@ public class PlayerTrigger : MonoBehaviour
     private void Awake()
     {
         playerManager = GetComponent<PlayerManager>();
-        manager = playerManager.manager;
     }
 
     private void OnTriggerEnter(Collider other)
