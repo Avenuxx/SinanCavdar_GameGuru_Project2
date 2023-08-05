@@ -20,6 +20,10 @@ public class PlayerTrigger : MonoBehaviour
             case "Finish":
                 EventManager.Broadcast(GameEvent.OnWin);
                 break;
+
+            case "Collectable":
+                EventManager.Broadcast(GameEvent.OnCollect, other.gameObject);
+                break;
         }
     }
 }

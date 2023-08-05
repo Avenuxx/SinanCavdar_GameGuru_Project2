@@ -10,6 +10,7 @@ public enum GameEvent
     OnPlaceStack,
     OnSpawnStack,
     OnSetFinishLine,
+    OnCollect,
 
     //AUDIO EVENTS
     OnPlaySound,

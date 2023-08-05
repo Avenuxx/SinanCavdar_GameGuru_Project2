@@ -22,4 +22,11 @@ public enum CMCam
     CMFinishLine,
 }
 
+public enum CollectableType
+{
+    Coin,
+    Diamond,
+    Star,
+}
+
 
