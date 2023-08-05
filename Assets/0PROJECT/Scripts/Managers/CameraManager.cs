@@ -4,9 +4,15 @@ using UnityEngine;
 
 public class CameraManager : InstanceManager<CameraManager>
 {
+    GameManager manager;
     public CMCam cMCamEnum;
-    public GameObject CMPlayer, CMFinishLine;
+    public GameObject CMPlayer, CMFinishLine, CMLose;
     public List<GameObject> CamList = new List<GameObject>();
+
+    private void Awake()
+    {
+        manager = FindObjectOfType<GameManager>();
+    }
 
     private void Start()
     {
@@ -18,6 +24,7 @@ public class CameraManager : InstanceManager<CameraManager>
     {
         CamList.Add(CMPlayer);
         CamList.Add(CMFinishLine);
+        CamList.Add(CMLose);
     }
 
     private void CamControl()
@@ -35,6 +42,9 @@ public class CameraManager : InstanceManager<CameraManager>
 
             case CMCam.CMFinishLine:
                 return CMFinishLine;
+
+            case CMCam.CMLose:
+                return CMLose;
 
             default:
                 return CMPlayer;
@@ -63,17 +73,25 @@ public class CameraManager : InstanceManager<CameraManager>
         cMCamEnum = CMCam.CMPlayer;
     }
 
+    private void OnLose()
+    {
+        CMLose.transform.position = manager.player.transform.position + new Vector3(5, 10, -10);
+        cMCamEnum = CMCam.CMLose;
+    }
+
     // ###############################     EVENTS      ###################################
 
     private void OnEnable()
     {
         EventManager.AddHandler(GameEvent.OnWin, OnWin);
+        EventManager.AddHandler(GameEvent.OnLose, OnLose);
         EventManager.AddHandler(GameEvent.OnNextLevel, OnNextLevel);
     }
 
     private void OnDisable()
     {
         EventManager.RemoveHandler(GameEvent.OnWin, OnWin);
+        EventManager.RemoveHandler(GameEvent.OnLose, OnLose);
         EventManager.RemoveHandler(GameEvent.OnNextLevel, OnNextLevel);
     }
 }

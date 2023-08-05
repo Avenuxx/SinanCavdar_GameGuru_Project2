@@ -64,8 +64,6 @@ public class StackMovement : MonoBehaviour
         if ((StackMovement)value != this)
             return;
 
-
-
         moveSpeed = 0;
 
         var diff = transform.position.x - LastStack.gameObject.transform.position.x;
@@ -90,6 +88,7 @@ public class StackMovement : MonoBehaviour
             CurrentStack = null;
             gameObject.AddComponent<Rigidbody>();
             manager._isPlacedWrong = true;
+            EventManager.Broadcast(GameEvent.OnPlaySound, "FailStack");
             return;
         }
 
@@ -102,7 +101,7 @@ public class StackMovement : MonoBehaviour
             transform.position = perfectPosition;
             LastStack = GetComponent<StackMovement>();
 
-            manager.data.score += 3;
+            manager.data.Score += 3;
             manager.stacksList.Add(gameObject);
             manager.combo++;
 
@@ -117,6 +116,7 @@ public class StackMovement : MonoBehaviour
         var dir = diff > 0 ? 1 : -1;
         SplitCube(diff, dir);
         LastStack = GetComponent<StackMovement>();
+        EventManager.Broadcast(GameEvent.OnPlaySound, "Break");
     }
 
     private void SplitCube(float diff, float dir)
@@ -149,7 +149,7 @@ public class StackMovement : MonoBehaviour
         var thisStackRenderer = GetComponent<Renderer>();
         newStackRenderer.material = thisStackRenderer.material;
 
-        manager.data.score++;
+        manager.data.Score++;
 
         Destroy(newStack, 5f);
     }
@@ -158,6 +158,8 @@ public class StackMovement : MonoBehaviour
     {
         LastStack = stackGenerator.startStack.GetComponent<StackMovement>();
     }
+
+
 
     ///////////////// EVENTS /////////////////
     private void OnEnable()

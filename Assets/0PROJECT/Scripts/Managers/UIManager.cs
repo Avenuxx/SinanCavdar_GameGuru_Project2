@@ -11,28 +11,25 @@ public class UIManager : MonoBehaviour
     public GameObject winPanel;
     public GameObject losePanel;
     public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI totalMoneyText;
+    public TextMeshProUGUI levelCountText;
+    public GameObject[] panelElements;
 
     private void Awake()
     {
         manager = FindObjectOfType<GameManager>();
     }
 
-    // Start is called before the first frame update
     void Start()
     {
-        InvokeRepeating(nameof(TypeTexts), .2f, .2f);
+        InvokeRepeating(nameof(TypeTexts), 0, .2f);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    
     public void NextLevel()
     {
         EventManager.Broadcast(GameEvent.OnNextLevel);
         winPanel.SetActive(false);
+        SetPanelElements(true);
     }
 
     public void Restart()
@@ -52,13 +49,24 @@ public class UIManager : MonoBehaviour
 
     IEnumerator OpenWinLosePanel(GameObject panel)
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(3f);
+        SetPanelElements(false);
         panel.SetActive(true);
+    }
+
+    void SetPanelElements(bool active)
+    {
+        foreach (GameObject element in panelElements)
+        {
+            element.SetActive(active);
+        }
     }
 
     void TypeTexts()
     {
-        scoreText.text = "SCORE: " + manager.data.score;
+        scoreText.text = manager.data.Score.ToString("0");
+        totalMoneyText.text = manager.data.TotalMoney.ToString("0");
+        levelCountText.text = "LEVEL " + (manager.data.levelCount + 1);
     }
 
 

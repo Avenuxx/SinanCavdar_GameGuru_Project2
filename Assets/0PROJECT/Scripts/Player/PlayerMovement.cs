@@ -15,9 +15,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        if (IsGameOver())
+        if (IsGameOver()&& manager.gameStateEnum == GameState.Playing)
         {
             EventManager.Broadcast(GameEvent.OnLose);
+            Debug.Log("sinan");
             return;
         }
 

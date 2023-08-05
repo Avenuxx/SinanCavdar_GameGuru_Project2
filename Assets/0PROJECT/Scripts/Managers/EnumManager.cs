@@ -20,6 +20,7 @@ public enum CMCam
 {
     CMPlayer, 
     CMFinishLine,
+    CMLose,
 }
 
 public enum CollectableType

@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelCount: 0
   score: 0
+  totalMoney: 0
   LevelStackCounts: 0300000005000000080000000c0000001000000014000000180000001e000000240000002a000000320000003c000000

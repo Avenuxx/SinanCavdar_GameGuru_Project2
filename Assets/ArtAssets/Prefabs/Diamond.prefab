@@ -112,6 +112,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d6cd9c0b6917824f90371dee47f2b62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetStack: {fileID: 0}
   collectableTypeEnum: 1
 --- !u!95 &6886658974716367484
 Animator:
@@ -222,19 +223,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 19879880, guid: 23818e20c9fcaa74eae69d5f3348c74d, type: 3}
       propertyPath: InitialModule.startColor.maxColor.a
-      value: 1
+      value: 0.5254902
       objectReference: {fileID: 0}
     - target: {fileID: 19879880, guid: 23818e20c9fcaa74eae69d5f3348c74d, type: 3}
       propertyPath: InitialModule.startColor.maxColor.b
-      value: 0.6313726
+      value: 0.7830189
       objectReference: {fileID: 0}
     - target: {fileID: 19879880, guid: 23818e20c9fcaa74eae69d5f3348c74d, type: 3}
       propertyPath: InitialModule.startColor.maxColor.g
-      value: 0.07450981
+      value: 0.40923816
       objectReference: {fileID: 0}
     - target: {fileID: 19879880, guid: 23818e20c9fcaa74eae69d5f3348c74d, type: 3}
       propertyPath: InitialModule.startColor.maxColor.r
-      value: 0.37647063
+      value: 0.6119221
       objectReference: {fileID: 0}
     - target: {fileID: 19879880, guid: 23818e20c9fcaa74eae69d5f3348c74d, type: 3}
       propertyPath: InitialModule.startSizeY.minMaxState

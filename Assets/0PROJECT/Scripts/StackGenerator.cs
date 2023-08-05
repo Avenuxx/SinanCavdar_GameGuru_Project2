@@ -25,7 +25,7 @@ public class StackGenerator : InstanceManager<StackGenerator>
         //SET NEW STACK POSITION
         if (StackMovement.LastStack != null && StackMovement.LastStack.gameObject != startStack)
         {
-            int xPos = manager.data.score % 2 == 0 ? -4 : 4;
+            int xPos = manager.data.Score % 2 == 0 ? -4 : 4;
             var stackPosition = new Vector3(xPos, transform.position.y, StackMovement.LastStack.transform.position.z + stackPrefab.transform.localScale.z);
             stack.transform.position = stackPosition;
         }
@@ -33,6 +33,8 @@ public class StackGenerator : InstanceManager<StackGenerator>
         {
             stack.transform.position = new Vector3(-4, startStack.transform.position.y, startStack.transform.position.z + stackPrefab.transform.localScale.z);
         }
+
+        EventManager.Broadcast(GameEvent.OnSpawnCollectable, stack.gameObject);
     }
 
     private void OnDrawGizmos()
