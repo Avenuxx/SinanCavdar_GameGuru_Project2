@@ -16,7 +16,7 @@ public class FinishManager : MonoBehaviour
 
     void OnSetFinishLine()
     {
-        manager.intFloats.stackCount = data.LevelStackCounts[data.levelCount % 12];
+        manager.intFloats.stackCount = data.LevelStackCounts[data.levelCount];
         manager.bools._canPlaceStack = true;
 
         //GET FINISH OBJ POS
@@ -27,7 +27,7 @@ public class FinishManager : MonoBehaviour
         float stackHeight = StackMovement.CurrentStack.transform.position.y;
 
         //GET FINISH OBJ POSZ IN FLOAT
-        float finishPosZ = manager.stackGenerator.startStack.transform.position.z + (((data.LevelStackCounts[data.levelCount % 12] + 1) * prefabBoundZ) - prefabBoundZ / 5);
+        float finishPosZ = manager.stackGenerator.startStack.transform.position.z + (((data.LevelStackCounts[data.levelCount] + 1) * prefabBoundZ) - prefabBoundZ / 5);
         Vector3 finishPos = new Vector3(manager.objects.player.transform.position.x, -30, finishPosZ);
 
         Vector3 desiredPos = finishPos;

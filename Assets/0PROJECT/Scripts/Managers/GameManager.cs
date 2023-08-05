@@ -100,7 +100,7 @@ public class GameManager : MonoBehaviour
 
     void OnNextLevel()
     {
-        data.levelCount++;
+        data.levelCount = Mathf.Min(data.levelCount + 1, 11);
         gameStateEnum = GameState.Beginning;
     }
 

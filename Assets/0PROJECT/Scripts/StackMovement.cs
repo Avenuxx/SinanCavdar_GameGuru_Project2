@@ -94,6 +94,7 @@ public class StackMovement : MonoBehaviour
         if (manager.intFloats.stackCount == 0)
             manager.bools._canPlaceStack = false;
 
+        #region CheckForStackPlace
         //ON WRONG PLACED OF STACK
         if (Mathf.Abs(diff) >= stackScaleX)
         {
@@ -109,9 +110,11 @@ public class StackMovement : MonoBehaviour
         }
 
         //ON NORMAL PLACED OF STACK
-            EventManager.Broadcast(GameEvent.OnNormalPlacedStack,diff, gameObject);
+        EventManager.Broadcast(GameEvent.OnNormalPlacedStack, diff, gameObject);
+        #endregion
     }
 
+    #region NewStackProcess
     private void SplitCube(float diff, float dir)
     {
         //SET NEW SIZE OF THE STACK
@@ -149,7 +152,10 @@ public class StackMovement : MonoBehaviour
 
         Destroy(newStack, 5f);
     }
+    #endregion
 
+
+    #region StackPlaceVoids
     private void OnWrongPlacedStack(object value)
     {
         if ((GameObject)value != this.gameObject)
@@ -209,6 +215,7 @@ public class StackMovement : MonoBehaviour
         EventManager.Broadcast(GameEvent.OnEarnScore);
         EventManager.Broadcast(GameEvent.OnPlaySound, "Break");
     }
+    #endregion
 
     private void OnNextLevel()
     {

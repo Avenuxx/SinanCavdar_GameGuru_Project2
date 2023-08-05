@@ -31,44 +31,46 @@ public class PlayerMovement : MonoBehaviour
 
     private void MovementTarget()
     {
-        //MOVEMENT TOWARD STACK
-        if (playerManager.playerStateEnum == PlayerState.GoingStack)
+        switch (playerManager.playerStateEnum)
         {
-            //IS THERE ANY STACK TO GO
-            if (manager.lists.stacksList.Count > playerManager.structMovement.goingStackIndex)
-                playerManager.structMovement.target = manager.lists.stacksList[playerManager.structMovement.goingStackIndex].transform;
+            case PlayerState.GoingStack:
+                #region SetPlayerTarget
+                //IS THERE ANY STACK TO GO
+                if (manager.lists.stacksList.Count > playerManager.structMovement.goingStackIndex)
+                    playerManager.structMovement.target = manager.lists.stacksList[playerManager.structMovement.goingStackIndex].transform;
 
-            //PLAYER NEED TO GO FORWARD
-            else
-            {
-                playerManager.playerStateEnum = PlayerState.GoingForward;
-                return;
-            }
+                else
+                {
+                    playerManager.playerStateEnum = PlayerState.GoingForward;
+                    return;
+                }
+                #endregion
 
-            Vector3 moveDirection = (playerManager.structMovement.target.position - transform.position).normalized;
+                #region MoveToStack
+                Vector3 moveDirection = (playerManager.structMovement.target.position - transform.position).normalized;
 
-            //GET THE DISTANCE BETWEEN STACK AND PLAYER
-            float distanceToTarget = Vector3.Distance(transform.position, playerManager.structMovement.target.position);
-            if (distanceToTarget > .7f)
-                transform.position += moveDirection * playerManager.structMovement.moveSpeed * Time.deltaTime;
+                //GET THE DISTANCE BETWEEN STACK AND PLAYER
+                float distanceToTarget = Vector3.Distance(transform.position, playerManager.structMovement.target.position);
+                if (distanceToTarget > .7f)
+                    transform.position += moveDirection * playerManager.structMovement.moveSpeed * Time.deltaTime;
 
-            //GET THE COUNT OF HOW MANY STACK DID PLAYER REACH
-            else
-                playerManager.structMovement.goingStackIndex++;
-        }
+                else
+                    playerManager.structMovement.goingStackIndex++;
+                #endregion
+                break;
 
-        //MOVEMENT TOWARD FORWARD
-        else if (playerManager.playerStateEnum == PlayerState.GoingForward)
-        {
-            //IS THERE ANY STACK TO GO
-            if (playerManager.structMovement.goingStackIndex >= manager.lists.stacksList.Count)
-                transform.position += Vector3.forward * playerManager.structMovement.moveSpeed * Time.deltaTime;
+            case PlayerState.GoingForward:
+                #region MoveForward
+                //IS THERE ANY STACK TO GO
+                if (playerManager.structMovement.goingStackIndex >= manager.lists.stacksList.Count)
+                    transform.position += Vector3.forward * playerManager.structMovement.moveSpeed * Time.deltaTime;
 
-            else
-                playerManager.playerStateEnum = PlayerState.GoingStack;
+                else
+                    playerManager.playerStateEnum = PlayerState.GoingStack;
+                #endregion
+                break;
         }
     }
-
 
     private bool IsGameOver()
     {
