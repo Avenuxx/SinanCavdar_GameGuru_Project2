@@ -56,6 +56,11 @@ public class GameManager : MonoBehaviour
         InvokeRepeating(nameof(SaveData), 1f, 1f);
     }
 
+    private void Start()
+    {
+        Application.targetFrameRate = 60;
+    }
+
     private void Update()
     {
         if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
