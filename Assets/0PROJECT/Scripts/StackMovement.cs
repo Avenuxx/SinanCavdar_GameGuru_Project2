@@ -9,9 +9,13 @@ public class StackMovement : MonoBehaviour
     GameManager manager;
     StackGenerator stackGenerator;
 
+    [Header("Ints & Floats")]
     public float moveSpeed = 1f;
-    private bool _isForward = true;
     public float perfectThreshold = 0.15f;
+
+    [Space(10)]
+    [Header("Bools")]
+    private bool _isForward = true;
 
     public static StackMovement CurrentStack { get; private set; }
     public static StackMovement LastStack { get; private set; }

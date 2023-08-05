@@ -5,7 +5,6 @@ using UnityEngine;
 public class PlayerTrigger : MonoBehaviour
 {
     PlayerManager playerManager;
-    GameManager manager;
 
     private void Awake()
     {

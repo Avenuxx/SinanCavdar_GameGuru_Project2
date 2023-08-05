@@ -6,8 +6,12 @@ using DG.Tweening;
 public class Collectable : MonoBehaviour
 {
     GameManager manager;
-    public Transform targetStack;
+    [Header("Enums")]
     public CollectableType collectableTypeEnum;
+
+    [Space(10)]
+    [Header("Transforms")]
+    public Transform targetStack;
 
     private void Awake()
     {

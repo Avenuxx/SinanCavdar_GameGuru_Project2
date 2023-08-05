@@ -7,10 +7,14 @@ public class PlayerManager : MonoBehaviour
 {
     public GameManager manager;
     public GameData data;
+
+    public PlayerState playerStateEnum;
+
+    [Space(10)]
+    [Header("Definitions")]
     public PlayerMovement playerMovement;
     public PlayerAnimation playerAnimation;
     public PlayerTrigger playerTrigger;
-    public PlayerState playerStateEnum;
 
     [Serializable]
     public struct StructMovement

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ParticleManager : MonoBehaviour
 {
+    [Header("Lists")]
     public List<ParticleSystem> collectableParticles = new List<ParticleSystem>();
 
     private void OnCollect(object value)

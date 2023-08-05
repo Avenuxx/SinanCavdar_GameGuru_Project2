@@ -5,11 +5,18 @@ using UnityEngine;
 public class StackGenerator : InstanceManager<StackGenerator>
 {
     GameManager manager;
-    public Material[] stackMaterials;
-    public GameObject startStack;
-    public Transform stackParent;
+    StackMovement stackPrefab;
 
-    public StackMovement stackPrefab;
+    [Header("Materials")]
+    public Material[] stackMaterials;
+
+    [Space(10)]
+    [Header("GameObjects")]
+    public GameObject startStack;
+
+    [Space(10)]
+    [Header("Transforms")]
+    public Transform stackParent;
 
     private void Awake()
     {

@@ -6,7 +6,15 @@ public class CameraManager : InstanceManager<CameraManager>
 {
     GameManager manager;
     public CMCam cMCamEnum;
-    public GameObject CMPlayer, CMFinishLine, CMLose;
+
+    [Space(10)]
+    [Header("GameObjects")]
+    public GameObject CMPlayer;
+    public GameObject CMFinishLine;
+    public GameObject CMLose;
+
+    [Space(10)]
+    [Header("Lists")]
     public List<GameObject> CamList = new List<GameObject>();
 
     private void Awake()

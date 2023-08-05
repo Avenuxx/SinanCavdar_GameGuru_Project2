@@ -33,6 +33,9 @@ public class GameData : ScriptableObject
             else totalMoney = value;
         }
     }
+
+    [Space(10)]
+    [Header("Lists")]
     public List<int> LevelStackCounts = new List<int>();
 
 

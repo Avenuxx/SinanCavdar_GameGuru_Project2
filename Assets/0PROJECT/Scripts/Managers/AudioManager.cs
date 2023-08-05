@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
+    [Header("Audio Sources")]
     public AudioSource audioPlay;
     public AudioSource soundPlay;
 

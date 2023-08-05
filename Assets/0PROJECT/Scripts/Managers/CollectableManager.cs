@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CollectableManager : MonoBehaviour
 {
+    [Header("Lists")]
     public List<GameObject> collectableList = new List<GameObject>();
 
     void OnSpawnCollectable(object value)
