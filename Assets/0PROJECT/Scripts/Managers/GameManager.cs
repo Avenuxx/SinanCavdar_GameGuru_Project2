@@ -43,7 +43,6 @@ public class GameManager : MonoBehaviour
     public IntFloats intFloats;
     public Bools bools;
 
-
     private void Awake()
     {
 #if !UNITY_EDITOR
