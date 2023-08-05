@@ -17,8 +17,14 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+#if !UNITY_EDITOR
+        SaveManager.LoadData(data);
+#endif
+
         player = GameObject.FindGameObjectWithTag("Player");
         stackGenerator = FindObjectOfType<StackGenerator>();
+
+        InvokeRepeating(nameof(SaveData), 1f, 1f);
     }
 
     private void Update()
@@ -54,8 +60,6 @@ public class GameManager : MonoBehaviour
         gameStateEnum = GameState.GameOver;
     }
 
-   
-
     void OnSetFinishLine()
     {
         data.levelCount++;
@@ -75,11 +79,21 @@ public class GameManager : MonoBehaviour
 
         finishObj.transform.position = finishPos;
         finishObj.transform.DOMove(desiredPos, 4f).SetEase(Ease.OutCubic);
+
+        //SET FINISH CAM POS
+        Vector3 camDesiredPos = desiredPos;
+        camDesiredPos.y = 5;
+        CameraManager.Instance.CMFinishLine.transform.parent.position = camDesiredPos;
     }
 
     void OnFinishLine()
     {
         gameStateEnum = GameState.FinishLine;
+    }
+
+    void SaveData()
+    {
+        SaveManager.SaveData(data);
     }
 
 

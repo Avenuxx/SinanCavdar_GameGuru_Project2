@@ -77,6 +77,9 @@ public class StackMovement : MonoBehaviour
     {
         var stackScaleX = LastStack.transform.localScale.x;
 
+        if (manager.stackCount == 0)
+            return;
+
         //ON WRONG PLACED OF STACK
         if (Mathf.Abs(diff) >= stackScaleX)
         {
@@ -90,7 +93,7 @@ public class StackMovement : MonoBehaviour
         var perfectThreshold = 0.2f;
 
         //ON PERFECT PLACED OF STACK
-        if (Mathf.Abs(diff) <= perfectThreshold && manager.stackCount != 0)
+        if (Mathf.Abs(diff) <= perfectThreshold )
         {
             var perfectPosition = new Vector3(LastStack.transform.position.x, transform.position.y, transform.position.z);
             transform.position = perfectPosition;

@@ -50,14 +50,20 @@ public class CameraManager : InstanceManager<CameraManager>
         }
     }
 
+    private void OnFinishLine()
+    {
+        cMCamEnum = CMCam.CMFinishLine;
+    }
+
     // ###############################     EVENTS      ###################################
 
     private void OnEnable()
     {
-
+        EventManager.AddHandler(GameEvent.OnFinishLine, OnFinishLine);
     }
+
     private void OnDisable()
     {
-
+        EventManager.RemoveHandler(GameEvent.OnFinishLine, OnFinishLine);
     }
 }
