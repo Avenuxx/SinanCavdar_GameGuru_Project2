@@ -96,13 +96,13 @@ public class StackMovement : MonoBehaviour
         var perfectThreshold = 0.2f;
 
         //ON PERFECT PLACED OF STACK
-        if (Mathf.Abs(diff) <= perfectThreshold )
+        if (Mathf.Abs(diff) <= perfectThreshold)
         {
             var perfectPosition = new Vector3(LastStack.transform.position.x, transform.position.y, transform.position.z);
             transform.position = perfectPosition;
             LastStack = GetComponent<StackMovement>();
 
-            manager.data.score++;
+            manager.data.score += 3;
             manager.stacksList.Add(gameObject);
             manager.combo++;
 
@@ -156,7 +156,7 @@ public class StackMovement : MonoBehaviour
 
     private void OnNextLevel()
     {
-        LastStack=stackGenerator.startStack.GetComponent<StackMovement>();
+        LastStack = stackGenerator.startStack.GetComponent<StackMovement>();
     }
 
     ///////////////// EVENTS /////////////////
