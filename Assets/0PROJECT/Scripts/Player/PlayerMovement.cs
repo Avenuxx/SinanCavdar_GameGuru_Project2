@@ -15,7 +15,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        if (IsGameOver()&& manager.gameStateEnum == GameState.Playing)
+        if (IsGameOver() && manager.gameStateEnum == GameState.Playing)
         {
             EventManager.Broadcast(GameEvent.OnLose);
             EventManager.Broadcast(GameEvent.OnPlaySound, "FallScream");
@@ -68,15 +68,13 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+
     private bool IsGameOver()
     {
         //CHECK FOR PLAYER Y POS
-        if (transform.position.y < 0)
-        {
-            return true;
-        }
-        else
-            return false;
+        bool gameState;
+        gameState = transform.position.y < 0 ? true : false;
+        return gameState;
     }
 
     void OnNextLevel()

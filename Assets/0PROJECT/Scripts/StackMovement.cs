@@ -47,9 +47,9 @@ public class StackMovement : MonoBehaviour
             return;
 
         //VARIABLES OF MOVEMENT OF CURRENT STACK
-        var direction = _isForward ? 1 : -1;
-        var move = moveSpeed * Time.deltaTime * direction;
-        var limit = LastStack.transform.localScale.x + 1;
+        float direction = _isForward ? 1 : -1;
+        float move = moveSpeed * Time.deltaTime * direction;
+        float limit = LastStack.transform.localScale.x + 1;
 
         //LEFT-RIGHT MOVEMENT OF CURRENT STACK
         Vector3 newPosition = transform.position + Vector3.right * move;
@@ -111,17 +111,17 @@ public class StackMovement : MonoBehaviour
     private void SplitCube(float diff, float dir)
     {
         //SET NEW SIZE OF THE STACK
-        var newBoundsSize = LastStack.transform.localScale.x - Mathf.Abs(diff);
-        var fallingStackSize = transform.localScale.x - newBoundsSize;
+        float newBoundsSize = LastStack.transform.localScale.x - Mathf.Abs(diff);
+        float fallingStackSize = transform.localScale.x - newBoundsSize;
 
         //SET NEW POS OF THE STACK
-        var newBlockPosX = LastStack.transform.position.x + (diff / 2);
+        float newBlockPosX = LastStack.transform.position.x + (diff / 2);
         transform.localScale = new Vector3(newBoundsSize, transform.localScale.y, transform.localScale.z);
         transform.position = new Vector3(newBlockPosX, transform.position.y, transform.position.z);
 
         //SET TRANSFORMS
-        var stackEdge = transform.position.x + (newBoundsSize / 2f * dir);
-        var fallingStackXPos = stackEdge + fallingStackSize / 2f * dir;
+        float stackEdge = transform.position.x + (newBoundsSize / 2f * dir);
+        float fallingStackXPos = stackEdge + fallingStackSize / 2f * dir;
 
         SpawnFallingStack(fallingStackXPos, fallingStackSize);
     }
@@ -135,12 +135,12 @@ public class StackMovement : MonoBehaviour
         newStack.transform.position = new Vector3(fallingStackXPos, transform.position.y, transform.position.z);
 
         //SET POS OF THE FALLING STACK
-        var newStackRigidbody = newStack.AddComponent<Rigidbody>();
+        Rigidbody newStackRigidbody = newStack.AddComponent<Rigidbody>();
         newStackRigidbody.useGravity = true;
 
         //SET MATERIAL OF NEW STACK
-        var newStackRenderer = newStack.GetComponent<Renderer>();
-        var thisStackRenderer = GetComponent<Renderer>();
+        Renderer newStackRenderer = newStack.GetComponent<Renderer>();
+        Renderer thisStackRenderer = GetComponent<Renderer>();
         newStackRenderer.material = thisStackRenderer.material;
 
         Destroy(newStack, 5f);
