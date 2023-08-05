@@ -16,7 +16,4 @@ public class InstanceManager<T> : MonoBehaviour where T : InstanceManager<T>
             return instance;
         }
     }
-
-
-
 }

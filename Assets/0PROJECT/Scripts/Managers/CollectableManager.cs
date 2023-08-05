@@ -9,7 +9,7 @@ public class CollectableManager : MonoBehaviour
 
     void OnSpawnCollectable(object value)
     {
-        if (Random.value > .2f)
+        if (Random.value > .3f)
             return;
 
         GameObject stack = (GameObject)value;
