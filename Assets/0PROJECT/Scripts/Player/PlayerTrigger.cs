@@ -18,7 +18,7 @@ public class PlayerTrigger : MonoBehaviour
         switch (other.tag)
         {
             case "Finish":
-                EventManager.Broadcast(GameEvent.OnFinishLine);
+                EventManager.Broadcast(GameEvent.OnWin);
                 break;
         }
     }

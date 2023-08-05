@@ -10,7 +10,7 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         playerManager = GetComponent<PlayerManager>();
-        manager = playerManager.manager;
+        manager = FindObjectOfType<GameManager>();
     }
 
     private void Update()
@@ -36,7 +36,10 @@ public class PlayerMovement : MonoBehaviour
                 playerManager.structMovement.target = manager.stacksList[playerManager.structMovement.goingStackIndex].transform;
 
             else
+            {
                 playerManager.playerStateEnum = PlayerState.GoingForward;
+                return;
+            }
 
             Vector3 moveDirection = (playerManager.structMovement.target.position - transform.position).normalized;
 

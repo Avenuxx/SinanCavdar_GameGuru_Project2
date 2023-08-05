@@ -24,9 +24,14 @@ public class PlayerAnimation : MonoBehaviour
         playerManager.structAnimation.playerAnim.SetTrigger("isFalling");
     }
 
-    void OnFinishLine()
+    void OnWin()
     {
         playerManager.structAnimation.playerAnim.SetTrigger("isLevelEnd");
+    }
+
+    void OnNextLevel()
+    {
+        playerManager.structAnimation.playerAnim.SetBool("isStart", false);
     }
 
 
@@ -35,13 +40,15 @@ public class PlayerAnimation : MonoBehaviour
     {
         EventManager.AddHandler(GameEvent.OnStart, OnStart);
         EventManager.AddHandler(GameEvent.OnLose, OnLose);
-        EventManager.AddHandler(GameEvent.OnFinishLine, OnFinishLine);
+        EventManager.AddHandler(GameEvent.OnWin, OnWin);
+        EventManager.AddHandler(GameEvent.OnNextLevel, OnNextLevel);
     }
 
     private void OnDisable()
     {
         EventManager.RemoveHandler(GameEvent.OnStart, OnStart);
         EventManager.RemoveHandler(GameEvent.OnLose, OnLose);
-        EventManager.RemoveHandler(GameEvent.OnFinishLine, OnFinishLine);
+        EventManager.RemoveHandler(GameEvent.OnWin, OnWin);
+        EventManager.RemoveHandler(GameEvent.OnNextLevel, OnNextLevel);
     }
 }

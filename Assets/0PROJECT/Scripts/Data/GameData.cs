@@ -9,6 +9,7 @@ public class GameData : ScriptableObject
 {
     [Header("Ints & Floats")]
     public int levelCount;
+    public int score;
     public List<int> LevelStackCounts = new List<int>();
 
 
@@ -16,5 +17,6 @@ public class GameData : ScriptableObject
     public void ResetData()
     {
         levelCount = 0;
+        score = 0;
     }
 }

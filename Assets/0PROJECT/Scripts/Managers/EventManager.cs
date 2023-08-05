@@ -5,10 +5,11 @@ public enum GameEvent
 {
     OnStart,
     OnLose,
+    OnWin,
+    OnNextLevel,
     OnPlaceStack,
     OnSpawnStack,
     OnSetFinishLine,
-    OnFinishLine,
 
     //AUDIO EVENTS
     OnPlaySound,

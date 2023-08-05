@@ -17,20 +17,20 @@ public class StackMovement : MonoBehaviour
     private void Awake()
     {
         manager = FindObjectOfType<GameManager>();
+        stackGenerator = FindObjectOfType<StackGenerator>();
     }
 
     private void Start()
     {
         if (LastStack == null)
         {
-            LastStack = GameObject.Find("StartStack").GetComponent<StackMovement>();
+            LastStack = stackGenerator.startStack.GetComponent<StackMovement>();
         }
 
         //SET MATERIAL OF NEW STACK
         CurrentStack = this;
-        stackGenerator = FindObjectOfType<StackGenerator>();
         var renderer = GetComponent<Renderer>();
-        renderer.material = stackGenerator.stackMaterials[manager.score % 12];
+        renderer.material = stackGenerator.stackMaterials[manager.stackCount % 12];
 
         //SET SCALE OF NEW STACK
         var localScale = transform.localScale;
@@ -77,8 +77,11 @@ public class StackMovement : MonoBehaviour
     {
         var stackScaleX = LastStack.transform.localScale.x;
 
-        if (manager.stackCount == 0)
+        if (!manager._canPlaceStack)
             return;
+
+        if (manager.stackCount == 0)
+            manager._canPlaceStack = false;
 
         //ON WRONG PLACED OF STACK
         if (Mathf.Abs(diff) >= stackScaleX)
@@ -99,7 +102,7 @@ public class StackMovement : MonoBehaviour
             transform.position = perfectPosition;
             LastStack = GetComponent<StackMovement>();
 
-            manager.score++;
+            manager.data.score++;
             manager.stacksList.Add(gameObject);
             manager.combo++;
 
@@ -146,21 +149,26 @@ public class StackMovement : MonoBehaviour
         var thisStackRenderer = GetComponent<Renderer>();
         newStackRenderer.material = thisStackRenderer.material;
 
-        manager.score++;
+        manager.data.score++;
 
         Destroy(newStack, 5f);
     }
 
-
+    private void OnNextLevel()
+    {
+        LastStack=stackGenerator.startStack.GetComponent<StackMovement>();
+    }
 
     ///////////////// EVENTS /////////////////
     private void OnEnable()
     {
         EventManager.AddHandler(GameEvent.OnPlaceStack, OnPlaceStack);
+        EventManager.AddHandler(GameEvent.OnNextLevel, OnNextLevel);
     }
 
     private void OnDisable()
     {
         EventManager.RemoveHandler(GameEvent.OnPlaceStack, OnPlaceStack);
+        EventManager.RemoveHandler(GameEvent.OnNextLevel, OnNextLevel);
     }
 }

@@ -50,20 +50,30 @@ public class CameraManager : InstanceManager<CameraManager>
         }
     }
 
-    private void OnFinishLine()
+    private void OnWin()
     {
+        CMFinishLine.transform.parent.GetComponent<Animator>().enabled = true;
+        CMFinishLine.transform.parent.GetComponent<Animator>().Play("FinishCamAnim", 0, 0);
         cMCamEnum = CMCam.CMFinishLine;
+    }
+
+    private void OnNextLevel()
+    {
+        CMFinishLine.transform.parent.GetComponent<Animator>().enabled = false;
+        cMCamEnum = CMCam.CMPlayer;
     }
 
     // ###############################     EVENTS      ###################################
 
     private void OnEnable()
     {
-        EventManager.AddHandler(GameEvent.OnFinishLine, OnFinishLine);
+        EventManager.AddHandler(GameEvent.OnWin, OnWin);
+        EventManager.AddHandler(GameEvent.OnNextLevel, OnNextLevel);
     }
 
     private void OnDisable()
     {
-        EventManager.RemoveHandler(GameEvent.OnFinishLine, OnFinishLine);
+        EventManager.RemoveHandler(GameEvent.OnWin, OnWin);
+        EventManager.RemoveHandler(GameEvent.OnNextLevel, OnNextLevel);
     }
 }
