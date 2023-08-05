@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,13 +9,40 @@ public class GameManager : MonoBehaviour
     public GameState gameStateEnum;
     public GameData data;
     public StackGenerator stackGenerator;
-    public GameObject player;
-    public GameObject finishObj;
-    public List<GameObject> stacksList = new List<GameObject>();
-    public bool _isPlacedWrong;
-    public bool _canPlaceStack;
-    public int combo;
-    public int stackCount;
+
+    [Serializable]
+    public struct Objects
+    {
+        public GameObject player;
+        public GameObject finishObj;
+    }
+
+    [Serializable]
+    public struct Lists
+    {
+        public List<GameObject> stacksList;
+    }
+
+    [Serializable]
+    public struct IntFloats
+    {
+        public int perfectStack;
+        public int stackCount;
+        public int perfectStackStreak;
+    }
+
+    [Serializable]
+    public struct Bools
+    {
+        public bool _isPlacedWrong;
+        public bool _canPlaceStack;
+    }
+
+    public Objects objects;
+    public Lists lists;
+    public IntFloats intFloats;
+    public Bools bools;
+
 
     private void Awake()
     {
@@ -22,7 +50,7 @@ public class GameManager : MonoBehaviour
         SaveManager.LoadData(data);
 #endif
 
-        player = GameObject.FindGameObjectWithTag("Player");
+        objects.player = GameObject.FindGameObjectWithTag("Player");
         stackGenerator = FindObjectOfType<StackGenerator>();
 
         InvokeRepeating(nameof(SaveData), 1f, 1f);
@@ -40,10 +68,10 @@ public class GameManager : MonoBehaviour
                 EventManager.Broadcast(GameEvent.OnStart);
             }
 
-            if (!_canPlaceStack)
+            if (!bools._canPlaceStack)
                 return;
 
-            if (_isPlacedWrong)
+            if (bools._isPlacedWrong)
                 return;
 
             EventManager.Broadcast(GameEvent.OnSpawnStack);
@@ -63,8 +91,8 @@ public class GameManager : MonoBehaviour
 
     void OnSetFinishLine()
     {
-        stackCount = data.LevelStackCounts[data.levelCount];
-        _canPlaceStack = true;
+        intFloats.stackCount = data.LevelStackCounts[data.levelCount % 12];
+        bools._canPlaceStack = true;
 
         //SET FINISH OBJ POS
         GameObject finishObj = Instantiate(Resources.Load<GameObject>("Finish"));
@@ -72,9 +100,9 @@ public class GameManager : MonoBehaviour
         float prefabBoundZ = stackGenerator.stackPrefab.transform.localScale.z;
         float stackHeight = StackMovement.CurrentStack.transform.position.y;
 
-        float finishPosZ = stackGenerator.startStack.transform.position.z + (((data.LevelStackCounts[data.levelCount] + 1) * prefabBoundZ) - prefabBoundZ / 5);
+        float finishPosZ = stackGenerator.startStack.transform.position.z + (((data.LevelStackCounts[data.levelCount % 12] + 1) * prefabBoundZ) - prefabBoundZ / 5);
         Debug.Log(finishPosZ);
-        Vector3 finishPos = new Vector3(player.transform.position.x, -30, finishPosZ);
+        Vector3 finishPos = new Vector3(objects.player.transform.position.x, -30, finishPosZ);
 
         Vector3 desiredPos = finishPos;
         desiredPos.y = stackHeight + 0.51f;
@@ -82,7 +110,7 @@ public class GameManager : MonoBehaviour
         finishObj.transform.position = finishPos;
         finishObj.transform.DOMove(desiredPos, 4f).SetEase(Ease.OutCubic);
 
-        this.finishObj = finishObj;
+        this.objects.finishObj = finishObj;
 
         //SET FINISH CAM POS
         Vector3 camDesiredPos = desiredPos;
@@ -99,8 +127,14 @@ public class GameManager : MonoBehaviour
     {
         data.levelCount++;
         gameStateEnum = GameState.Beginning;
-        stacksList.Clear();
-        combo = 0;
+        ResetElements();
+    }
+
+    void ResetElements()
+    {
+        lists.stacksList.Clear();
+        intFloats.perfectStack = 0;
+        intFloats.perfectStackStreak = 0;
     }
 
     void SaveData()

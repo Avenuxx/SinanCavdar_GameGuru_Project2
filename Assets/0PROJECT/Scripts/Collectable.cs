@@ -26,12 +26,12 @@ public class Collectable : MonoBehaviour
         if ((GameObject)value != this.gameObject)
             return;
 
-        transform.SetParent(manager.player.transform);
+        transform.SetParent(manager.objects.player.transform);
         transform.DOLocalJump(Vector3.zero, 2, 1, .5f).OnComplete(() => { Destroy(gameObject); });
         EventManager.Broadcast(GameEvent.OnPlaySound, "Coin");
         manager.data.TotalMoney += (int)collectableTypeEnum;
     }
-   
+
 
     ///////////////// EVENTS /////////////////
     private void OnEnable()

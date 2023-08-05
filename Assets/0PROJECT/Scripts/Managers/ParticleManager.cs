@@ -10,8 +10,16 @@ public class ParticleManager : MonoBehaviour
     {
         GameObject collectable = (GameObject)value;
         int particleIndex = (int)collectable.GetComponent<Collectable>().collectableTypeEnum;
-        ParticleSystem newParticle = Instantiate(collectableParticles[particleIndex], collectable.transform.position, Quaternion.identity, null);
-        Destroy(newParticle, 2f);
+        var newParticle = Instantiate(collectableParticles[particleIndex], collectable.transform.position, Quaternion.identity);
+        Destroy(newParticle.gameObject, 2f);
+    }
+
+    private void OnPerfectPlaceStack(object value)
+    {
+        GameObject stack = (GameObject)value;
+        var particlePos = stack.transform.position - new Vector3(0, 0, stack.transform.localScale.z / 2);
+        var newParticle = Instantiate(Resources.Load<ParticleSystem>("PerfectParticle"), particlePos, Quaternion.identity);
+        Destroy(newParticle.gameObject, 2f);
     }
 
 
@@ -19,10 +27,12 @@ public class ParticleManager : MonoBehaviour
     private void OnEnable()
     {
         EventManager.AddHandler(GameEvent.OnCollect, OnCollect);
+        EventManager.AddHandler(GameEvent.OnPerfectPlaceStack, OnPerfectPlaceStack);
     }
 
     private void OnDisable()
     {
         EventManager.RemoveHandler(GameEvent.OnCollect, OnCollect);
+        EventManager.RemoveHandler(GameEvent.OnPerfectPlaceStack, OnPerfectPlaceStack);
     }
 }

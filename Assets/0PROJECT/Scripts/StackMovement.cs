@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class StackMovement : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class StackMovement : MonoBehaviour
 
     public float moveSpeed = 1f;
     private bool _isForward = true;
+    public float perfectThreshold = 0.15f;
 
     public static StackMovement CurrentStack { get; private set; }
     public static StackMovement LastStack { get; private set; }
@@ -22,6 +24,7 @@ public class StackMovement : MonoBehaviour
 
     private void Start()
     {
+        //GET THE LAST STACK
         if (LastStack == null)
         {
             LastStack = stackGenerator.startStack.GetComponent<StackMovement>();
@@ -30,7 +33,7 @@ public class StackMovement : MonoBehaviour
         //SET MATERIAL OF NEW STACK
         CurrentStack = this;
         var renderer = GetComponent<Renderer>();
-        renderer.material = stackGenerator.stackMaterials[manager.stackCount % 12];
+        renderer.material = stackGenerator.stackMaterials[manager.intFloats.stackCount % 12];
 
         //SET SCALE OF NEW STACK
         var localScale = transform.localScale;
@@ -40,7 +43,7 @@ public class StackMovement : MonoBehaviour
 
     void Update()
     {
-        if (manager._isPlacedWrong)
+        if (manager.bools._isPlacedWrong)
             return;
 
         //LEFT-RIGHT MOVEMENT OF CURRENT STACK
@@ -51,6 +54,7 @@ public class StackMovement : MonoBehaviour
         Vector3 newPosition = transform.position + Vector3.right * move;
         newPosition.x = Mathf.Clamp(newPosition.x, -limit, limit);
 
+        //CHANGE OF DIRECTION
         if (Mathf.Abs(newPosition.x) >= limit)
         {
             _isForward = !_isForward;
@@ -75,11 +79,11 @@ public class StackMovement : MonoBehaviour
     {
         var stackScaleX = LastStack.transform.localScale.x;
 
-        if (!manager._canPlaceStack)
+        if (!manager.bools._canPlaceStack)
             return;
 
-        if (manager.stackCount == 0)
-            manager._canPlaceStack = false;
+        if (manager.intFloats.stackCount == 0)
+            manager.bools._canPlaceStack = false;
 
         //ON WRONG PLACED OF STACK
         if (Mathf.Abs(diff) >= stackScaleX)
@@ -87,12 +91,11 @@ public class StackMovement : MonoBehaviour
             LastStack = null;
             CurrentStack = null;
             gameObject.AddComponent<Rigidbody>();
-            manager._isPlacedWrong = true;
+            manager.bools._isPlacedWrong = true;
             EventManager.Broadcast(GameEvent.OnPlaySound, "FailStack");
             return;
         }
 
-        var perfectThreshold = 0.2f;
 
         //ON PERFECT PLACED OF STACK
         if (Mathf.Abs(diff) <= perfectThreshold)
@@ -101,18 +104,29 @@ public class StackMovement : MonoBehaviour
             transform.position = perfectPosition;
             LastStack = GetComponent<StackMovement>();
 
+            //SCORE INCREASE
             manager.data.Score += 3;
-            manager.stacksList.Add(gameObject);
-            manager.combo++;
+            manager.lists.stacksList.Add(gameObject);
+            manager.intFloats.perfectStack++;
 
-            EventManager.Broadcast(GameEvent.OnPlaySoundPitch, "Note", 1f + ((manager.combo + 1f) / 10f));
+            //PERFECT STREAK CALCULATION
+            if (manager.intFloats.perfectStack > manager.intFloats.perfectStackStreak)
+                manager.intFloats.perfectStackStreak = manager.intFloats.perfectStack;
+
+            transform.LeanScale(transform.localScale * 1.15f, 0.7f).setEasePunch();
+
+            EventManager.Broadcast(GameEvent.OnPerfectPlaceStack, gameObject);
+
+            //PLAY AUDIO AND CAMERA SHAKE
+            var pitchAmount = 1f + ((manager.intFloats.perfectStack + 1f) / 10f);
+            EventManager.Broadcast(GameEvent.OnPlaySoundPitch, "Note", pitchAmount);
             CinemachineShake.Instance.ShakeCamera(.7f, .3f);
             return;
         }
 
         //ON NORMAL PLACED OF STACK
-        manager.combo = 0;
-        manager.stacksList.Add(gameObject);
+        manager.intFloats.perfectStack = 0;
+        manager.lists.stacksList.Add(gameObject);
         var dir = diff > 0 ? 1 : -1;
         SplitCube(diff, dir);
         LastStack = GetComponent<StackMovement>();
@@ -121,10 +135,11 @@ public class StackMovement : MonoBehaviour
 
     private void SplitCube(float diff, float dir)
     {
-        //SET NEW SIZE AND POS OF THE STACK
+        //SET NEW SIZE OF THE STACK
         var newBoundsSize = LastStack.transform.localScale.x - Mathf.Abs(diff);
         var fallingStackSize = transform.localScale.x - newBoundsSize;
 
+        //SET NEW POS OF THE STACK
         var newBlockPosX = LastStack.transform.position.x + (diff / 2);
         transform.localScale = new Vector3(newBoundsSize, transform.localScale.y, transform.localScale.z);
         transform.position = new Vector3(newBlockPosX, transform.position.y, transform.position.z);
@@ -138,10 +153,12 @@ public class StackMovement : MonoBehaviour
     private void SpawnFallingStack(float fallingStackXPos, float fallingStackSize)
     {
         var newStack = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        //SET SIZE AND POS OF THE FALLING STACK
+
+        //SET SIZE OF THE FALLING STACK
         newStack.transform.localScale = new Vector3(fallingStackSize, transform.localScale.y, transform.localScale.z);
         newStack.transform.position = new Vector3(fallingStackXPos, transform.position.y, transform.position.z);
 
+        //SET POS OF THE FALLING STACK
         var newStackRigidbody = newStack.AddComponent<Rigidbody>();
         newStackRigidbody.useGravity = true;
 

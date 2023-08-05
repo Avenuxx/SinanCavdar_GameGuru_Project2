@@ -7,6 +7,7 @@ public class StackGenerator : InstanceManager<StackGenerator>
     GameManager manager;
     public Material[] stackMaterials;
     public GameObject startStack;
+    public Transform stackParent;
 
     public StackMovement stackPrefab;
 
@@ -18,9 +19,9 @@ public class StackGenerator : InstanceManager<StackGenerator>
 
     public void OnSpawnStack()
     {
-        manager.stackCount--;
+        manager.intFloats.stackCount--;
 
-        var stack = Instantiate(stackPrefab);
+        var stack = Instantiate(stackPrefab, stackParent);
 
         //SET NEW STACK POSITION
         if (StackMovement.LastStack != null && StackMovement.LastStack.gameObject != startStack)
@@ -29,6 +30,7 @@ public class StackGenerator : InstanceManager<StackGenerator>
             var stackPosition = new Vector3(xPos, transform.position.y, StackMovement.LastStack.transform.position.z + stackPrefab.transform.localScale.z);
             stack.transform.position = stackPosition;
         }
+        //SET FIRST GENERATOR POSITION
         else
         {
             stack.transform.position = new Vector3(-4, startStack.transform.position.y, startStack.transform.position.z + stackPrefab.transform.localScale.z);
@@ -45,7 +47,8 @@ public class StackGenerator : InstanceManager<StackGenerator>
 
     private void OnNextLevel()
     {
-        var desiredPos = new Vector3(0, stackPrefab.transform.position.y, manager.finishObj.transform.position.z + 2);
+        //SET GENERATOR POSITION
+        var desiredPos = new Vector3(0, stackPrefab.transform.position.y, manager.objects.finishObj.transform.position.z + 2);
         startStack.transform.position = desiredPos;
     }
 

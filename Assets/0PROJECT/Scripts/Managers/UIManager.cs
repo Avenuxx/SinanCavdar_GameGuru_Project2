@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,12 +9,27 @@ using UnityEngine.SceneManagement;
 public class UIManager : MonoBehaviour
 {
     GameManager manager;
-    public GameObject winPanel;
-    public GameObject losePanel;
-    public TextMeshProUGUI scoreText;
-    public TextMeshProUGUI totalMoneyText;
-    public TextMeshProUGUI levelCountText;
-    public GameObject[] panelElements;
+
+    [Serializable]
+    public struct Objects
+    {
+        public GameObject winPanel;
+        public GameObject losePanel;
+        public GameObject[] panelElements;
+    }
+
+    [Serializable]
+    public struct Texts
+    {
+        public TextMeshProUGUI scoreText;
+        public TextMeshProUGUI totalMoneyText;
+        public TextMeshProUGUI levelCountText;
+        public TextMeshProUGUI winPerfectStreakText;
+        public TextMeshProUGUI losePerfectStreakText;
+    }
+
+    public Objects objects;
+    public Texts texts;
 
     private void Awake()
     {
@@ -24,11 +40,12 @@ public class UIManager : MonoBehaviour
     {
         InvokeRepeating(nameof(TypeTexts), 0, .2f);
     }
-    
+
     public void NextLevel()
     {
         EventManager.Broadcast(GameEvent.OnNextLevel);
-        winPanel.SetActive(false);
+        objects.winPanel.SetActive(false);
+        EventManager.Broadcast(GameEvent.OnPlaySound, "Pop");
         SetPanelElements(true);
     }
 
@@ -39,12 +56,13 @@ public class UIManager : MonoBehaviour
 
     private void OnWin()
     {
-        StartCoroutine(OpenWinLosePanel(winPanel));
+        StartCoroutine(OpenWinLosePanel(objects.winPanel));
+        EventManager.Broadcast(GameEvent.OnPlaySound, "Success");
     }
 
     private void OnLose()
     {
-        StartCoroutine(OpenWinLosePanel(losePanel));
+        StartCoroutine(OpenWinLosePanel(objects.losePanel));
     }
 
     IEnumerator OpenWinLosePanel(GameObject panel)
@@ -56,7 +74,7 @@ public class UIManager : MonoBehaviour
 
     void SetPanelElements(bool active)
     {
-        foreach (GameObject element in panelElements)
+        foreach (GameObject element in objects.panelElements)
         {
             element.SetActive(active);
         }
@@ -64,9 +82,14 @@ public class UIManager : MonoBehaviour
 
     void TypeTexts()
     {
-        scoreText.text = manager.data.Score.ToString("0");
-        totalMoneyText.text = manager.data.TotalMoney.ToString("0");
-        levelCountText.text = "LEVEL " + (manager.data.levelCount + 1);
+        //CONTROL OF TEXTS IN REPEAT
+        texts.scoreText.text = manager.data.Score.ToString("0");
+        texts.totalMoneyText.text = manager.data.TotalMoney.ToString("0");
+        texts.levelCountText.text = "LEVEL " + (manager.data.levelCount + 1);
+
+        string perfectStreakText = manager.intFloats.perfectStackStreak + " perfect streak / " + manager.data.LevelStackCounts[manager.data.levelCount] + " stack";
+        texts.winPerfectStreakText.text = perfectStreakText;
+        texts.losePerfectStreakText.text = perfectStreakText;
     }
 
 

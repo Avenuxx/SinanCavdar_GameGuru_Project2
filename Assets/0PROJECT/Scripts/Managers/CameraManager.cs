@@ -75,7 +75,7 @@ public class CameraManager : InstanceManager<CameraManager>
 
     private void OnLose()
     {
-        CMLose.transform.position = manager.player.transform.position + new Vector3(5, 10, -10);
+        CMLose.transform.position = manager.objects.player.transform.position + new Vector3(5, 10, -10);
         cMCamEnum = CMCam.CMLose;
     }
 

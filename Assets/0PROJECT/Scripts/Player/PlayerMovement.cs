@@ -33,8 +33,8 @@ public class PlayerMovement : MonoBehaviour
         //MOVEMENT TOWARD STACK
         if (playerManager.playerStateEnum == PlayerState.GoingStack)
         {
-            if (manager.stacksList.Count > playerManager.structMovement.goingStackIndex)
-                playerManager.structMovement.target = manager.stacksList[playerManager.structMovement.goingStackIndex].transform;
+            if (manager.lists.stacksList.Count > playerManager.structMovement.goingStackIndex)
+                playerManager.structMovement.target = manager.lists.stacksList[playerManager.structMovement.goingStackIndex].transform;
 
             else
             {
@@ -55,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
         //MOVEMENT TOWARD FORWARD
         else if (playerManager.playerStateEnum == PlayerState.GoingForward)
         {
-            if (playerManager.structMovement.goingStackIndex >= manager.stacksList.Count)
+            if (playerManager.structMovement.goingStackIndex >= manager.lists.stacksList.Count)
                 transform.position += Vector3.forward * playerManager.structMovement.moveSpeed * Time.deltaTime;
 
             else
@@ -73,5 +73,21 @@ public class PlayerMovement : MonoBehaviour
             return false;
     }
 
-   
+    void OnNextLevel()
+    {
+        playerManager.structMovement.goingStackIndex = 0;
+    }
+
+
+
+    ///////////////// EVENTS /////////////////
+    private void OnEnable()
+    {
+        EventManager.AddHandler(GameEvent.OnNextLevel, OnNextLevel);
+    }
+
+    private void OnDisable()
+    {
+        EventManager.RemoveHandler(GameEvent.OnNextLevel, OnNextLevel);
+    }
 }

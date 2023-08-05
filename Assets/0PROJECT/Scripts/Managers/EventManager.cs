@@ -8,6 +8,7 @@ public enum GameEvent
     OnWin,
     OnNextLevel,
     OnPlaceStack,
+    OnPerfectPlaceStack,
     OnSpawnStack,
     OnSpawnCollectable,
     OnSetFinishLine,
