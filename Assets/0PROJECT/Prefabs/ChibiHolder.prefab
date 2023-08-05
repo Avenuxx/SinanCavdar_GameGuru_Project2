@@ -81,13 +81,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   manager: {fileID: 0}
   data: {fileID: 11400000, guid: 20bf34d0599693d428657b281103c5de, type: 2}
+  playerStateEnum: 0
   playerMovement: {fileID: 316386950439474227}
   playerAnimation: {fileID: 495171301842006281}
   playerTrigger: {fileID: 5815516398442991267}
-  playerStateEnum: 0
   structMovement:
     target: {fileID: 0}
-    moveSpeed: 0
+    moveSpeed: 2
     goingStackIndex: 0
   structAnimation:
     playerAnim: {fileID: 0}

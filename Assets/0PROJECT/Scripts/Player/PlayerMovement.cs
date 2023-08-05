@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -80,6 +81,7 @@ public class PlayerMovement : MonoBehaviour
     void OnNextLevel()
     {
         playerManager.structMovement.goingStackIndex = 0;
+        transform.DOJump(new Vector3(0, transform.position.y, transform.position.z + 1.5f), 1f, 1, .5f);
     }
 
 

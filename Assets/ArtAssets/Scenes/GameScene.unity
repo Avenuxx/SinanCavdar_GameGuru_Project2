@@ -8931,7 +8931,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4739053937385140167, guid: 917a9e62433fbee4aa2602397a6c049f, type: 3}
       propertyPath: structMovement.moveSpeed
-      value: 2.5
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 917a9e62433fbee4aa2602397a6c049f, type: 3}
